@@ -3,7 +3,7 @@ name: Create frontend image
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 permissions:
   contents: read
