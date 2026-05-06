@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -u
+
+echo "Building Expo web app before push..."
+
+EXPO_NO_TELEMETRY=1 npx expo export --platform web
+BUILD_STATUS=$?
+
+if [ "$BUILD_STATUS" -ne 0 ]; then
+  echo "Web build failed. Push blocked."
+  exit "$BUILD_STATUS"
+fi
+
+echo "Web build passed. Push allowed."
+exit 0

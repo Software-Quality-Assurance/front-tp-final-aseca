@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -u
+
+echo "Running lint before commit..."
+
+if npm run lint; then
+  echo "Lint passed. Commit allowed."
+  exit 0
+fi
+
+echo "Lint failed. Trying to fix automatically..."
+
+if ! npm run lint:fix; then
+  echo "lint:fix failed. Commit blocked."
+  exit 1
+fi
+
+if npm run lint; then
+  echo "Lint issues were fixed automatically."
+  echo "Commit blocked so you can review and stage the fixes. Run git commit again afterwards."
+else
+  echo "Lint still fails after automatic fixes. Commit blocked."
+fi
+
+exit 1
