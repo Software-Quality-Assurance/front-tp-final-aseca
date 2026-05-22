@@ -5,22 +5,44 @@ set -u
 echo "Running lint before commit..."
 
 if npm run lint; then
-  echo "Lint passed. Commit allowed."
-  exit 0
-fi
+  echo "Lint passed."
+else
+  echo "Lint failed. Trying to fix automatically..."
 
-echo "Lint failed. Trying to fix automatically..."
+  if ! npm run lint:fix; then
+    echo "lint:fix failed. Commit blocked."
+    exit 1
+  fi
 
-if ! npm run lint:fix; then
-  echo "lint:fix failed. Commit blocked."
+  if npm run lint; then
+    echo "Lint issues were fixed automatically."
+    echo "Commit blocked so you can review and stage the fixes. Run git commit again afterwards."
+  else
+    echo "Lint still fails after automatic fixes. Commit blocked."
+  fi
+
   exit 1
 fi
 
-if npm run lint; then
-  echo "Lint issues were fixed automatically."
+echo "Running format check before commit..."
+
+if npm run format:check; then
+  echo "Format check passed. Commit allowed."
+  exit 0
+fi
+
+echo "Format check failed. Running formatter..."
+
+if ! npm run format; then
+  echo "format failed. Commit blocked."
+  exit 1
+fi
+
+if npm run format:check; then
+  echo "Formatting issues were fixed automatically."
   echo "Commit blocked so you can review and stage the fixes. Run git commit again afterwards."
 else
-  echo "Lint still fails after automatic fixes. Commit blocked."
+  echo "Format check still fails after running formatter. Commit blocked."
 fi
 
 exit 1
