@@ -73,10 +73,12 @@ export default function ProfilePage() {
     }
   }
 
+  if (!user) return null
+
   return (
     <ThemedView testID="profile-screen" className="flex-1 p-4">
       <ThemedText className="text-2xl mb-3">Profile</ThemedText>
-      <ThemedText className="mb-2">ID: {user!.id}</ThemedText>
+      <ThemedText className="mb-2">ID: {user?.id}</ThemedText>
       <TextInput
         testID="profile-email-input"
         placeholder="Email"

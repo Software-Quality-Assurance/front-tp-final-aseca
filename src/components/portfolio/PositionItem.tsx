@@ -11,22 +11,29 @@ type Props = {
 
 export function PositionItem({ position }: Props) {
   return (
-    <ThemedView type="backgroundElement" className="rounded-lg p-4 mb-3 flex-row items-center justify-between">
+    <ThemedView type="backgroundElement" className="rounded-xl p-4 mb-3 flex-row items-center justify-between">
       <View className="flex-1 gap-1">
-        <ThemedText type="subtitle" className="text-lg leading-6">
-          {position.company}
-        </ThemedText>
+        <ThemedText className="text-lg font-semibold">{position.companyName}</ThemedText>
         <ThemedText type="code">{position.ticker}</ThemedText>
-        <View className="flex-row">
-          <ThemedText themeColor="textSecondary">Quantity: </ThemedText>
-          <ThemedText>{position.quantity}</ThemedText>
+        <View className="flex-row gap-4 mt-1">
+          <View className="flex-row gap-1">
+            <ThemedText themeColor="textSecondary" className="text-sm">Qty:</ThemedText>
+            <ThemedText className="text-sm font-medium">{position.quantity}</ThemedText>
+          </View>
+          <View className="flex-row gap-1">
+            <ThemedText themeColor="textSecondary" className="text-sm">Price:</ThemedText>
+            <ThemedText className="text-sm font-medium">${Number(position.currentPrice).toFixed(2)}</ThemedText>
+          </View>
+          <View className="flex-row gap-1">
+            <ThemedText themeColor="textSecondary" className="text-sm">Value:</ThemedText>
+            <ThemedText className="text-sm font-medium">${Number(position.currentValue).toFixed(2)}</ThemedText>
+          </View>
         </View>
-        <View className="flex-row">
-          <ThemedText themeColor="textSecondary">Ref. Price: </ThemedText>
-          <ThemedText>${position.referencePrice.toFixed(2)}</ThemedText>
-        </View>
+        {position.warning ? (
+          <ThemedText className="text-xs text-yellow-500 mt-1">{position.warning}</ThemedText>
+        ) : null}
       </View>
-      <PositionItemActions positionId={position.id} />
+      <PositionItemActions ticker={position.ticker} />
     </ThemedView>
   )
 }

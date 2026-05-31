@@ -25,11 +25,13 @@ export type CompanySearchParams =
 // --- Portfolio ---
 
 export type Position = {
-  id: number
   ticker: string
-  company: string
+  companyName: string
   quantity: number
-  referencePrice: number
+  currentPrice: number
+  currentValue: number
+  lastUpdatedAt: string
+  warning: string | null
 }
 
 export type OperationType = 'BUY' | 'SELL'

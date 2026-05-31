@@ -7,7 +7,14 @@ export function useClient() {
 
   return useCallback(
     async <T>(path: string, options?: RequestInit): Promise<T> => {
-      const response = await authorizedFetch(buildUrl(path), options ?? {})
+      const mergedOptions: RequestInit = {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options?.headers as Record<string, string>),
+        },
+      }
+      const response = await authorizedFetch(buildUrl(path), mergedOptions)
       if (!response.ok) throw { status: response.status, message: await response.text() }
       if (response.status === 204) return undefined as T
       return response.json() as Promise<T>

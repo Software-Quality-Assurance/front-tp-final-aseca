@@ -9,10 +9,10 @@ type Props = {
 export function AddPositionButton({ onPress }: Props) {
   return (
     <TouchableOpacity
-      className="bg-blue-500 px-4 py-2.5 rounded-lg self-end mb-4"
+      className="bg-blue-600 px-5 py-2.5 rounded-xl flex-row items-center gap-1 shadow-sm"
       onPress={onPress}
     >
-      <ThemedText className="text-white font-semibold">+ Add Position</ThemedText>
+      <ThemedText className="text-white font-semibold text-base">+ Add</ThemedText>
     </TouchableOpacity>
   )
 }

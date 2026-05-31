@@ -146,20 +146,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const authorizedFetch = useCallback(
     async (input: RequestInfo, init: RequestInit = {}) => {
-      const t = token ?? (await storageGet());
+      const t = await storageGet();
       const headers = new Headers(init.headers ?? {});
       if (t) headers.set('Authorization', `Bearer ${t}`);
       const merged: RequestInit = { ...init, headers };
-      const resp = await fetch(input, merged);
-      if (resp.status === 401) {
-        // token invalid -> clear
-        await storageSet(null);
-        setToken(null);
-        setUser(null);
-      }
-      return resp;
+      return fetch(input, merged);
     },
-    [token]
+    []
   );
 
   const updateProfile = useCallback(
