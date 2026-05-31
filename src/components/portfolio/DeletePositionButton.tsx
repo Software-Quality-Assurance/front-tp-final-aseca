@@ -35,6 +35,7 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
   return (
     <>
       <TouchableOpacity
+        testID={`delete-position-button-${ticker}`}
         className="px-3 py-1.5 rounded-lg border border-red-500"
         onPress={() => setVisible(true)}
       >
@@ -53,6 +54,7 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
 
             <View className="flex-row gap-3 mt-2">
               <TouchableOpacity
+                testID="delete-position-cancel-button"
                 className="flex-1 py-3 rounded-lg border border-gray-400 items-center"
                 onPress={() => { setVisible(false); setError(null) }}
                 disabled={loading}
@@ -60,6 +62,7 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
                 <ThemedText>No</ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
+                testID="delete-position-confirm-button"
                 className="flex-1 py-3 rounded-lg bg-red-500 items-center"
                 onPress={handleConfirm}
                 disabled={loading}

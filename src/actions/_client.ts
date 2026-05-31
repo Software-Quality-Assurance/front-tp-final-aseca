@@ -15,7 +15,10 @@ export function useClient() {
         },
       }
       const response = await authorizedFetch(buildUrl(path), mergedOptions)
-      if (!response.ok) throw { status: response.status, message: await response.text() }
+      if (!response.ok) {
+    const text = await response.text()
+    throw { status: response.status, message: text || `Request failed with status ${response.status}` }
+  }
       if (response.status === 204) return undefined as T
       return response.json() as Promise<T>
     },

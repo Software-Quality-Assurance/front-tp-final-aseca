@@ -12,7 +12,7 @@ type Props = {
 
 export function PositionItem({ position, onRefresh }: Props) {
   return (
-    <ThemedView type="backgroundElement" className="rounded-xl p-4 mb-3 flex-row items-center justify-between">
+    <ThemedView testID={`position-item-${position.ticker}`} type="backgroundElement" className="rounded-xl p-4 mb-3 flex-row items-center justify-between">
       <View className="flex-1 gap-1">
         <ThemedText className="text-lg font-semibold">{position.companyName}</ThemedText>
         <ThemedText type="code">{position.ticker}</ThemedText>

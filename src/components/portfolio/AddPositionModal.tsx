@@ -67,8 +67,8 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
     } catch (e: any) {
       const status = e?.status
       if (status === 404) setError('Ticker not found')
-      else if (status === 422) setError(e?.message ?? 'No price available or insufficient shares')
-      else setError(e?.message ?? 'Something went wrong')
+      else if (status === 422) setError(e?.message || 'No price available or insufficient shares')
+      else setError(e?.message || 'Something went wrong')
     } finally {
       setLoading(false)
     }
@@ -83,19 +83,21 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
       <View className="flex-1 justify-center items-center bg-black/60">
-        <ThemedView className="w-80 rounded-2xl p-6 gap-4">
+        <ThemedView testID="add-position-modal" className="w-80 rounded-2xl p-6 gap-4">
 
           <ThemedText className="text-xl font-semibold">Register Operation</ThemedText>
 
           {/* BUY / SELL toggle */}
           <View className="flex-row rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700">
             <TouchableOpacity
+              testID="add-position-buy-button"
               className={`flex-1 py-2.5 items-center ${type === 'BUY' ? 'bg-green-500' : ''}`}
               onPress={() => setType('BUY')}
             >
               <ThemedText className={`font-semibold ${type === 'BUY' ? 'text-white' : ''}`}>BUY</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity
+              testID="add-position-sell-button"
               className={`flex-1 py-2.5 items-center ${type === 'SELL' ? 'bg-red-500' : ''}`}
               onPress={() => setType('SELL')}
             >
@@ -103,12 +105,13 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             </TouchableOpacity>
           </View>
 
-          {error ? <ThemedText className="text-red-500 text-sm">{error}</ThemedText> : null}
+          {error ? <ThemedText testID="add-position-error" className="text-red-500 text-sm">{error}</ThemedText> : null}
 
           {/* Ticker */}
           <View className="gap-1">
             <ThemedText className="text-sm" themeColor="textSecondary">Ticker</ThemedText>
             <TextInput
+              testID="add-position-ticker-input"
               placeholder="e.g. AAPL"
               placeholderTextColor={theme.textSecondary}
               value={ticker}
@@ -123,6 +126,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
           <View className="gap-1">
             <ThemedText className="text-sm" themeColor="textSecondary">Quantity</ThemedText>
             <TextInput
+              testID="add-position-quantity-input"
               placeholder="e.g. 10"
               placeholderTextColor={theme.textSecondary}
               value={quantity}
@@ -136,7 +140,9 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
           {/* Now toggle */}
           <View className="flex-row items-center justify-between">
             <ThemedText className="text-sm" themeColor="textSecondary">Use current date & time</ThemedText>
-            <Switch value={isNow} onValueChange={setIsNow} />
+            <TouchableOpacity testID="add-position-now-switch" onPress={() => setIsNow(v => !v)}>
+              <Switch value={isNow} onValueChange={setIsNow} pointerEvents="none" />
+            </TouchableOpacity>
           </View>
 
           {/* Date picker (only when not now) */}
@@ -144,6 +150,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             <View className="gap-1">
               <ThemedText className="text-sm" themeColor="textSecondary">Operation date (YYYY-MM-DD)</ThemedText>
               <TextInput
+                testID="add-position-date-input"
                 placeholder="2026-05-31"
                 placeholderTextColor={theme.textSecondary}
                 value={date}
@@ -164,6 +171,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
               <ThemedText>Cancel</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity
+              testID="add-position-submit-button"
               className={`flex-1 py-3 rounded-lg items-center ${type === 'BUY' ? 'bg-green-500' : 'bg-red-500'}`}
               onPress={handleSubmit}
               disabled={loading}

@@ -35,7 +35,7 @@ export function PositionList({ refreshTrigger = 0, onRefresh }: Props) {
 
   if (positions.length === 0) {
     return (
-      <ThemedView className="flex-1 items-center justify-center gap-2">
+      <ThemedView testID="portfolio-empty-state" className="flex-1 items-center justify-center gap-2">
         <ThemedText className="text-5xl">📭</ThemedText>
         <ThemedText className="text-lg font-semibold">No positions yet</ThemedText>
         <ThemedText themeColor="textSecondary" className="text-sm">
@@ -56,5 +56,5 @@ export function PositionList({ refreshTrigger = 0, onRefresh }: Props) {
     )
   }
 
-  return <ScrollView className="flex-1">{items}</ScrollView>
+  return <ScrollView testID="portfolio-position-list" className="flex-1">{items}</ScrollView>
 }
