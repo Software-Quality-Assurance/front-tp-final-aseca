@@ -9,9 +9,10 @@ import type { Position } from '@/actions/types'
 
 type Props = {
   refreshTrigger?: number
+  onRefresh: () => void
 }
 
-export function PositionList({ refreshTrigger = 0 }: Props) {
+export function PositionList({ refreshTrigger = 0, onRefresh }: Props) {
   const { user } = useAuth()
   const { getPortfolio } = usePortfolioActions()
   const [positions, setPositions] = useState<Position[]>([])
@@ -46,7 +47,13 @@ export function PositionList({ refreshTrigger = 0 }: Props) {
 
   const items = []
   for (const position of positions) {
-    items.push(<PositionItem key={position.ticker} position={position} />)
+    items.push(
+      <PositionItem
+        key={position.ticker}
+        position={position}
+        onRefresh={onRefresh}
+      />,
+    )
   }
 
   return <ScrollView className="flex-1">{items}</ScrollView>

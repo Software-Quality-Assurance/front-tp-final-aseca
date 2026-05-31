@@ -2,14 +2,15 @@ import React from 'react'
 import { View } from 'react-native'
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
-import { PositionItemActions } from './PositionItemActions'
+import { DeletePositionButton } from './DeletePositionButton'
 import type { Position } from '@/actions/types'
 
 type Props = {
   position: Position
+  onRefresh: () => void
 }
 
-export function PositionItem({ position }: Props) {
+export function PositionItem({ position, onRefresh }: Props) {
   return (
     <ThemedView type="backgroundElement" className="rounded-xl p-4 mb-3 flex-row items-center justify-between">
       <View className="flex-1 gap-1">
@@ -33,7 +34,10 @@ export function PositionItem({ position }: Props) {
           <ThemedText className="text-xs text-yellow-500 mt-1">{position.warning}</ThemedText>
         ) : null}
       </View>
-      <PositionItemActions ticker={position.ticker} />
+
+      <View className="ml-3">
+        <DeletePositionButton ticker={position.ticker} quantity={position.quantity} onSuccess={onRefresh} />
+      </View>
     </ThemedView>
   )
 }

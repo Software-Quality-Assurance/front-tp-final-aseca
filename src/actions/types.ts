@@ -39,18 +39,19 @@ export type OperationType = 'BUY' | 'SELL'
 export type Operation = {
   id: number
   ticker: string
-  company: string
+  companyName: string
   type: OperationType
   quantity: number
   unitPrice: number
   totalPrice: number
-  date: string
+  timestamp: string
 }
 
 export type CreateOperationPayload = {
   ticker: string
   type: OperationType
   quantity: number
+  timestampMs?: number
 }
 
 export type PatchOperationPayload = {
