@@ -1,9 +1,9 @@
-import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import React from 'react';
+import { Text, TouchableOpacity } from 'react-native';
 
 type Props = {
-  onPress?: () => void
-}
+  onPress?: () => void;
+};
 
 export function AddPositionButton({ onPress }: Props) {
   return (
@@ -14,5 +14,5 @@ export function AddPositionButton({ onPress }: Props) {
     >
       <Text className="text-white font-semibold text-base">+ Add</Text>
     </TouchableOpacity>
-  )
+  );
 }

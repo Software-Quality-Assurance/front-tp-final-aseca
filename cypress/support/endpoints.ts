@@ -1,4 +1,4 @@
-const api = () => Cypress.env('apiUrl') as string
+const api = () => Cypress.env('apiUrl') as string;
 
 export const endpoints = {
   auth: {
@@ -16,4 +16,4 @@ export const endpoints = {
     base: () => `${api()}/api/company`,
     search: () => `${api()}/api/company/search`,
   },
-}
+};

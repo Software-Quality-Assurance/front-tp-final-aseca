@@ -1,12 +1,12 @@
-import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
-import { ThemedText } from '@/components/themed-text'
+import React from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { ThemedText } from '@/components/themed-text';
 
 type Props = {
-  ticker: string
-  onEdit?: (ticker: string) => void
-  onDelete?: (ticker: string) => void
-}
+  ticker: string;
+  onEdit?: (ticker: string) => void;
+  onDelete?: (ticker: string) => void;
+};
 
 export function PositionItemActions({ ticker, onEdit, onDelete }: Props) {
   return (
@@ -24,5 +24,5 @@ export function PositionItemActions({ ticker, onEdit, onDelete }: Props) {
         <ThemedText className="text-sm text-red-500">Delete</ThemedText>
       </TouchableOpacity>
     </View>
-  )
+  );
 }
