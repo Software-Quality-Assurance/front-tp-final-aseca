@@ -51,7 +51,6 @@ export type CreateOperationPayload = {
   ticker: string;
   type: OperationType;
   quantity: number;
-  timestampMs?: number;
 };
 
 export type PatchOperationPayload = {

@@ -93,14 +93,11 @@ describe('Portfolio — Feature 5 (Mobile)', () => {
     await expect(el('add-position-error')).toBeDisplayed();
   });
 
-  it('5.2 — BUY con fecha personalizada se registra correctamente', async () => {
+  it('5.2 — BUY se registra con timestamp del servidor', async () => {
     await tap('portfolio-add-button');
     await tap('add-position-buy-button');
     await typeInto('add-position-ticker-input', testTicker);
     await typeInto('add-position-quantity-input', '1');
-    await tap('add-position-now-switch');
-    await waitForElement('add-position-date-input');
-    await typeInto('add-position-date-input', '2026-01-15');
     await tap('add-position-submit-button');
     await el('add-position-modal').waitForDisplayed({
       timeout: 5000,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Switch, TextInput, TouchableOpacity, View } from 'react-native';
+import { Modal, TextInput, TouchableOpacity, View } from 'react-native';
 import { usePortfolioActions } from '@/actions/portfolio';
 import type { OperationType } from '@/actions/types';
 import { ThemedText } from '@/components/themed-text';
@@ -12,15 +12,6 @@ type Props = {
   onSuccess: () => void;
 };
 
-function todayString() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function parseDate(dateStr: string): number | undefined {
-  const ms = new Date(dateStr).getTime();
-  return isNaN(ms) ? undefined : ms;
-}
-
 export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
   const { createOperation } = usePortfolioActions();
   const theme = useTheme();
@@ -28,8 +19,6 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
   const [type, setType] = useState<OperationType>('BUY');
   const [ticker, setTicker] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [isNow, setIsNow] = useState(true);
-  const [date, setDate] = useState(todayString());
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,8 +26,6 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
     setType('BUY');
     setTicker('');
     setQuantity('');
-    setIsNow(true);
-    setDate(todayString());
     setError(null);
   }
 
@@ -53,8 +40,6 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
     if (!ticker.trim()) return setError('Ticker is required');
     if (!qty || qty <= 0 || !Number.isInteger(qty))
       return setError('Quantity must be a whole number ≥ 1');
-    if (!isNow && !parseDate(date))
-      return setError('Invalid date format (YYYY-MM-DD)');
 
     setLoading(true);
     try {
@@ -62,7 +47,6 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
         ticker: ticker.trim().toUpperCase(),
         type,
         quantity: qty,
-        timestampMs: isNow ? undefined : parseDate(date),
       });
       reset();
       onSuccess();
@@ -167,41 +151,6 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
               style={inputStyle}
             />
           </View>
-
-          {/* Now toggle */}
-          <View className="flex-row items-center justify-between">
-            <ThemedText className="text-sm" themeColor="textSecondary">
-              Use current date & time
-            </ThemedText>
-            <TouchableOpacity
-              testID="add-position-now-switch"
-              onPress={() => setIsNow((v) => !v)}
-            >
-              <Switch
-                value={isNow}
-                onValueChange={setIsNow}
-                pointerEvents="none"
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* Date picker (only when not now) */}
-          {!isNow && (
-            <View className="gap-1">
-              <ThemedText className="text-sm" themeColor="textSecondary">
-                Operation date (YYYY-MM-DD)
-              </ThemedText>
-              <TextInput
-                testID="add-position-date-input"
-                placeholder="2026-05-31"
-                placeholderTextColor={theme.textSecondary}
-                value={date}
-                onChangeText={setDate}
-                className="min-h-[44px] border rounded-lg px-3 py-2"
-                style={inputStyle}
-              />
-            </View>
-          )}
 
           {/* Actions */}
           <View className="flex-row gap-3 mt-2">

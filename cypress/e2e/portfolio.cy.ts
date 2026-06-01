@@ -131,8 +131,8 @@ describe('Portfolio — Feature 5', () => {
     }).should('be.visible');
   });
 
-  it('5.2 — BUY con fecha personalizada se registra correctamente', () => {
-    cy.intercept('POST', endpoints.portfolio.operations()).as('buyWithDate');
+  it('5.2 — BUY se registra con timestamp del servidor y retorna 201', () => {
+    cy.intercept('POST', endpoints.portfolio.operations()).as('buyOp');
     cy.get('[data-testid="portfolio-add-button"]').click({ force: true });
     cy.get('[data-testid="add-position-buy-button"]').click({ force: true });
     cy.get('[data-testid="add-position-ticker-input"]').type(testTicker, {
@@ -142,17 +142,8 @@ describe('Portfolio — Feature 5', () => {
       force: true,
     });
 
-    cy.get('[data-testid="add-position-now-switch"]').click({ force: true });
-    cy.get('[data-testid="add-position-date-input"]', { timeout: 3000 }).should(
-      'be.visible'
-    );
-    cy.get('[data-testid="add-position-date-input"]').clear({ force: true });
-    cy.get('[data-testid="add-position-date-input"]').type('2026-01-15', {
-      force: true,
-    });
-
     cy.get('[data-testid="add-position-submit-button"]').click({ force: true });
-    cy.wait('@buyWithDate').its('response.statusCode').should('eq', 201);
+    cy.wait('@buyOp').its('response.statusCode').should('eq', 201);
     cy.get('[data-testid="add-position-modal"]', { timeout: 5000 }).should(
       'not.exist'
     );
