@@ -16,4 +16,8 @@ export const endpoints = {
     base: () => `${api()}/api/company`,
     search: () => `${api()}/api/company/search`,
   },
+  watchlist: {
+    base: () => `${api()}/api/watchlist`,
+    ticker: (ticker: string) => `${api()}/api/watchlist/${ticker}`,
+  },
 };
