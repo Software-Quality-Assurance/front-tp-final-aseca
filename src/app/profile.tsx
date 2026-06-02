@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  Button,
-  TextInput,
-  View,
-  Platform,
-} from 'react-native';
+import { Alert, Button, TextInput, View, Platform } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
