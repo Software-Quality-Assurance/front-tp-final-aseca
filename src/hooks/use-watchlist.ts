@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useWatchlistApi, WatchlistItem } from '@/api/watchlist';
+import { useWatchlistApi, WatchlistItem } from '@/actions/watchlist';
 
 export function useWatchlist() {
   const [items, setItems] = useState<WatchlistItem[]>([]);
@@ -51,4 +51,3 @@ export function useWatchlist() {
     removeTicker,
   };
 }
-

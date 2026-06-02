@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Alert, Platform } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { WatchlistItem as WatchlistItemType } from '@/api/watchlist';
+import { WatchlistItem as WatchlistItemType } from '@/actions/watchlist';
 
 type Props = {
   item: WatchlistItemType;
@@ -24,7 +24,7 @@ export function WatchlistItem({ item, onRemove }: Props) {
         {
           text: 'Remove',
           style: 'destructive',
-          onPress: () => onRemove(item.ticker)
+          onPress: () => onRemove(item.ticker),
         },
       ]
     );
@@ -52,7 +52,9 @@ export function WatchlistItem({ item, onRemove }: Props) {
         onPress={handleDelete}
         className="bg-red-100 dark:bg-red-900/30 p-2 rounded-lg"
       >
-        <ThemedText className="text-red-500 text-xs font-bold">Remove</ThemedText>
+        <ThemedText className="text-red-500 text-xs font-bold">
+          Remove
+        </ThemedText>
       </TouchableOpacity>
     </View>
   );

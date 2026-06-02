@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, TextInput, TouchableOpacity, View } from 'react-native';
-import { useWatchlistApi } from '@/api/watchlist';
+import { useWatchlistApi } from '@/actions/watchlist';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
@@ -121,4 +121,3 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
     </Modal>
   );
 }
-

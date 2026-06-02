@@ -5,8 +5,14 @@ import Animated, { Keyframe, Easing } from 'react-native-reanimated';
 import classes from './animated-icon.module.css';
 const DURATION = 300;
 
+import { useAuth } from '@/hooks/useAuth';
+
 export function AnimatedSplashOverlay() {
-  return null;
+  const { loading } = useAuth();
+
+  if (!loading) return null;
+
+  return <View testID="splash-overlay" style={styles.backgroundSolidColor} />;
 }
 
 const keyframe = new Keyframe({
@@ -119,5 +125,10 @@ const styles = StyleSheet.create({
     width: 128,
     height: 128,
     position: 'absolute',
+  },
+  backgroundSolidColor: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#208AEF',
+    zIndex: 1000,
   },
 });

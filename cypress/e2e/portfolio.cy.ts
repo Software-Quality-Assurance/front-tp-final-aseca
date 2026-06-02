@@ -4,7 +4,7 @@ describe('Portfolio — Feature 5', () => {
   const uniqueId = Date.now();
   const email = `portfolio_test_${uniqueId}@example.com`;
   const password = 'Password123!';
-  const testTicker = 'SMNR';
+  const testTicker = `PF${String(uniqueId).slice(-6)}`;
   const testQuantity = '5';
 
   before(() => {
@@ -16,6 +16,25 @@ describe('Portfolio — Feature 5', () => {
       failOnStatusCode: false,
     }).then((res) => {
       expect(res.status).to.be.oneOf([201, 409]);
+    });
+
+    cy.getAuthToken(email, password).then((token) => {
+      cy.request({
+        method: 'POST',
+        url: endpoints.company.base(),
+        body: {
+          ticker: testTicker,
+          companyName: 'Portfolio Cypress Corp',
+          price: 31.4,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        failOnStatusCode: false,
+      }).then((res) => {
+        expect(res.status).to.be.oneOf([201, 409]);
+      });
     });
   });
 
@@ -134,7 +153,11 @@ describe('Portfolio — Feature 5', () => {
     cy.intercept('POST', endpoints.portfolio.operations()).as('buyOp');
     cy.get('[data-testid="portfolio-add-button"]').click({ force: true });
     cy.get('[data-testid="add-position-buy-button"]').click({ force: true });
+    cy.get('[data-testid="add-position-ticker-input"]').clear({ force: true });
     cy.get('[data-testid="add-position-ticker-input"]').type(testTicker, {
+      force: true,
+    });
+    cy.get('[data-testid="add-position-quantity-input"]').clear({
       force: true,
     });
     cy.get('[data-testid="add-position-quantity-input"]').type('1', {
@@ -142,7 +165,11 @@ describe('Portfolio — Feature 5', () => {
     });
 
     cy.get('[data-testid="add-position-submit-button"]').click({ force: true });
-    cy.wait('@buyOp').its('response.statusCode').should('eq', 201);
+    cy.wait('@buyOp').then((interception) => {
+      expect(interception.response?.statusCode).to.eq(201);
+      const body = interception.response?.body as { timestamp?: string };
+      expect(body.timestamp).to.be.a('string').and.not.be.empty;
+    });
     cy.get('[data-testid="add-position-modal"]', { timeout: 5000 }).should(
       'not.exist'
     );

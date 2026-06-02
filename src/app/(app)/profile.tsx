@@ -97,8 +97,9 @@ export default function ProfilePage() {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
+        keyboardType={Platform.OS === 'web' ? 'default' : 'email-address'}
         autoCapitalize="none"
+        editable={!loading && !saving}
       />
       <ProfileInput
         testID="profile-password-input"
@@ -106,6 +107,7 @@ export default function ProfilePage() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        editable={!loading && !saving}
       />
       <Button
         title={saving ? 'Saving...' : 'Save changes'}

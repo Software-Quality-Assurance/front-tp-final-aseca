@@ -54,7 +54,9 @@ describe('Watchlist — Feature 6', () => {
     cy.get('[data-testid="add-watchlist-ticker-input"]').type(testTicker, {
       force: true,
     });
-    cy.get('[data-testid="add-watchlist-submit-button"]').click({ force: true });
+    cy.get('[data-testid="add-watchlist-submit-button"]').click({
+      force: true,
+    });
 
     cy.wait('@addToWatchlist').then((interception) => {
       expect(interception.response?.statusCode).to.eq(201);
@@ -75,7 +77,9 @@ describe('Watchlist — Feature 6', () => {
     cy.get('[data-testid="add-watchlist-ticker-input"]').type(testTicker, {
       force: true,
     });
-    cy.get('[data-testid="add-watchlist-submit-button"]').click({ force: true });
+    cy.get('[data-testid="add-watchlist-submit-button"]').click({
+      force: true,
+    });
 
     cy.get('[data-testid="add-watchlist-error"]').should(
       'contain',
@@ -89,9 +93,14 @@ describe('Watchlist — Feature 6', () => {
     cy.get('[data-testid="add-watchlist-ticker-input"]').type(invalidTicker, {
       force: true,
     });
-    cy.get('[data-testid="add-watchlist-submit-button"]').click({ force: true });
+    cy.get('[data-testid="add-watchlist-submit-button"]').click({
+      force: true,
+    });
 
-    cy.get('[data-testid="add-watchlist-error"]').should('contain', 'not found');
+    cy.get('[data-testid="add-watchlist-error"]').should(
+      'contain',
+      'not found'
+    );
   });
 
   it('6.1 — eliminar compañía de la watchlist', () => {

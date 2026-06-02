@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, ScrollView, View, RefreshControl } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  View,
+  RefreshControl,
+} from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WatchlistItem } from './WatchlistItem';
@@ -51,11 +56,7 @@ export function WatchlistList({ refreshTrigger = 0 }: Props) {
     >
       <View className="py-4">
         {items.map((item) => (
-          <WatchlistItem
-            key={item.id}
-            item={item}
-            onRemove={removeTicker}
-          />
+          <WatchlistItem key={item.id} item={item} onRemove={removeTicker} />
         ))}
       </View>
     </ScrollView>

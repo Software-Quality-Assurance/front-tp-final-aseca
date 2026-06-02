@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useRouter, useFocusEffect } from 'expo-router';
-import { Button } from 'react-native';
+import { Button, Platform } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemedText } from '@/components/themed-text';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@/app/styles/register.style';
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, loading: authLoading } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -53,8 +53,9 @@ export default function RegisterPage() {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
+        keyboardType={Platform.OS === 'web' ? 'default' : 'email-address'}
         autoCapitalize="none"
+        editable={!authLoading && !loading}
       />
       <RegisterInput
         testID="register-password-input"
@@ -62,6 +63,7 @@ export default function RegisterPage() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        editable={!authLoading && !loading}
       />
       <Button
         title={loading ? 'Creating...' : 'Create account'}

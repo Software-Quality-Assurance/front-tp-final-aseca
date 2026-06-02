@@ -18,5 +18,3 @@ export function AddWatchlistButton({ onPress }: Props) {
     </TouchableOpacity>
   );
 }
-
-
