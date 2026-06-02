@@ -5,27 +5,31 @@ import { ThemedView } from '@/components/themed-view';
 import { WatchlistList } from '@/components/watchlist/WatchlistList';
 import { AddWatchlistButton } from '@/components/watchlist/AddWatchlistButton';
 import { AddWatchlistModal } from '@/components/watchlist/AddWatchlistModal';
-import { useWatchlist } from '@/hooks/use-watchlist';
+import {
+  screenHeaderBorderClassName,
+  SharedStyles,
+} from '@/app/styles/SharedStyles';
 
 export default function WatchlistScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-  const { refresh } = useWatchlist();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   function handleSuccess() {
     setModalVisible(false);
-    refresh();
+    setRefreshTrigger((prev) => prev + 1);
   }
 
   return (
-    <ThemedView className="flex-1">
-      <SafeAreaView style={{ flex: 1 }}>
-        <View className="flex-row items-center justify-between px-6 pt-8 pb-4 border-b border-gray-200 dark:border-gray-800">
-          <ThemedText className="text-4xl font-bold tracking-tight">
-            Watchlist
-          </ThemedText>
+    <ThemedView style={SharedStyles.container} testID="watchlist-screen">
+      <SafeAreaView style={SharedStyles.safeArea}>
+        <View
+          style={[SharedStyles.screenHeader, SharedStyles.screenHeaderWithActions]}
+          className={screenHeaderBorderClassName}
+        >
+          <ThemedText style={SharedStyles.screenTitle}>Watchlist</ThemedText>
           <AddWatchlistButton onPress={() => setModalVisible(true)} />
         </View>
-        <WatchlistList />
+        <WatchlistList refreshTrigger={refreshTrigger} />
       </SafeAreaView>
 
       <AddWatchlistModal
