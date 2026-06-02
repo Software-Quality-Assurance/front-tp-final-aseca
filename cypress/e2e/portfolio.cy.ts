@@ -20,8 +20,7 @@ describe('Portfolio — Feature 5', () => {
   });
 
   beforeEach(() => {
-    cy.login(email, password);
-    cy.visit('/');
+    cy.login(email, password, '/');
     cy.get('[data-testid="portfolio-add-button"]', { timeout: 10000 }).should(
       'be.visible'
     );
@@ -344,7 +343,10 @@ describe('Portfolio — Feature 5', () => {
   it('5.3 — navega a Watchlist desde la barra lateral', () => {
     cy.contains('Watchlist').click({ force: true });
     cy.url().should('include', '/watchlist');
-    cy.contains('Coming soon').should('be.visible');
+    cy.get('[data-testid="watchlist-screen"]', { timeout: 10000 }).should(
+      'be.visible'
+    );
+    cy.contains('Watchlist').should('be.visible');
   });
 
   it('5.3 — mantiene sesión al navegar entre secciones', () => {
@@ -366,6 +368,8 @@ describe('Portfolio — Feature 5', () => {
 
     cy.contains('Watchlist').click({ force: true });
     cy.url().should('include', '/watchlist');
-    cy.contains('Coming soon').should('be.visible');
+    cy.get('[data-testid="watchlist-screen"]', { timeout: 10000 }).should(
+      'be.visible'
+    );
   });
 });

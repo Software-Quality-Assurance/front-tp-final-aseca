@@ -12,7 +12,8 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "test:appium": "wdio run appium/config.ts",
-    "test:e2e": "cypress run"
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.15.5",

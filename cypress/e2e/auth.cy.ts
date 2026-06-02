@@ -23,7 +23,7 @@ describe('Auth flows', () => {
     cy.get('[data-testid="register-password-input"]')
       .should('not.be.disabled')
       .type(testPass, { force: true });
-    cy.contains('button', 'Create account').click({ force: true });
+    cy.clickButton('Create account');
 
     // Success message is shown and then navigation occurs to /login
     cy.contains('Account created. You can now log in.', { timeout: 10000 });
@@ -39,7 +39,7 @@ describe('Auth flows', () => {
     cy.get('[data-testid="register-password-input"]')
       .should('not.be.disabled')
       .type(testPass, { force: true });
-    cy.contains('button', 'Create account').click({ force: true });
+    cy.clickButton('Create account');
 
     cy.contains('Registration failed', { timeout: 10000 }).should('exist');
   });
@@ -53,7 +53,7 @@ describe('Auth flows', () => {
     cy.get('[data-testid="login-password-input"]')
       .should('not.be.disabled')
       .type('WrongPassword!', { force: true });
-    cy.contains('button', 'Login').click({ force: true });
+    cy.clickButton('Login');
 
     // The actual error text depends on the backend mapping, but includes one of these keywords usually
     cy.contains(/Invalid credentials|Login failed/, { timeout: 10000 }).should(
@@ -70,7 +70,7 @@ describe('Auth flows', () => {
     cy.get('[data-testid="login-password-input"]')
       .should('not.be.disabled')
       .type(testPass, { force: true });
-    cy.contains('button', 'Login').click({ force: true });
+    cy.clickButton('Login');
 
     // Should be redirected to the profile page
     cy.url().should('include', '/profile');
@@ -87,12 +87,12 @@ describe('Auth flows', () => {
     cy.get('[data-testid="login-password-input"]')
       .should('not.be.disabled')
       .type(testPass, { force: true });
-    cy.contains('button', 'Login').click({ force: true });
+    cy.clickButton('Login');
     cy.url().should('include', '/profile');
 
     // Setup window.alert catcher for web
     cy.on('window:alert', (text) => {
-      expect(text).to.contains('Your profile was updated');
+      expect(text).to.include('Your profile was updated');
     });
 
     cy.get('[data-testid="profile-email-input"]')
@@ -101,7 +101,7 @@ describe('Auth flows', () => {
     cy.get('[data-testid="profile-email-input"]')
       .should('not.be.disabled')
       .type(updatedEmail, { force: true });
-    cy.contains('button', 'Save changes').click({ force: true });
+    cy.clickButton('Save changes');
 
     // Verify input stays correctly typed
     cy.get('[data-testid="profile-email-input"]').should(
@@ -120,11 +120,11 @@ describe('Auth flows', () => {
     cy.get('[data-testid="login-password-input"]')
       .should('not.be.disabled')
       .type(testPass, { force: true });
-    cy.contains('button', 'Login').click({ force: true });
+    cy.clickButton('Login');
     cy.url().should('include', '/profile');
 
     // Click logout button
-    cy.contains('button', 'Logout').click({ force: true });
+    cy.clickButton('Logout');
     cy.url().should('include', '/login');
   });
 
@@ -137,16 +137,16 @@ describe('Auth flows', () => {
     cy.get('[data-testid="login-password-input"]')
       .should('not.be.disabled')
       .type(testPass, { force: true });
-    cy.contains('button', 'Login').click({ force: true });
+    cy.clickButton('Login');
     cy.url().should('include', '/profile');
 
     // Auto-accept confirm dialog
     cy.on('window:confirm', () => true);
     cy.on('window:alert', (text) => {
-      expect(text).to.contains('Your account was deleted');
+      expect(text).to.include('Your account was deleted');
     });
 
-    cy.contains('button', 'Delete account').click({ force: true });
+    cy.clickButton('Delete account');
 
     // Should be redirected mapping out of profile
     cy.url().should('not.include', '/profile');

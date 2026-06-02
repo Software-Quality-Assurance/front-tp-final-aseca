@@ -8,7 +8,7 @@ import { AddWatchlistModal } from '@/components/watchlist/AddWatchlistModal';
 import {
   screenHeaderBorderClassName,
   SharedStyles,
-} from '@/app/styles/SharedStyles';
+} from '@/styles/SharedStyles';
 
 export default function WatchlistScreen() {
   const [modalVisible, setModalVisible] = useState(false);
