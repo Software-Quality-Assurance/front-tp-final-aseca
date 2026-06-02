@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { WatchlistList } from '@/components/watchlist/WatchlistList';
 import { AddWatchlistButton } from '@/components/watchlist/AddWatchlistButton';
 import { AddWatchlistModal } from '@/components/watchlist/AddWatchlistModal';
 import {
-  screenHeaderBorderClassName,
-  SharedStyles,
-} from '@/styles/SharedStyles';
+  WatchlistScreen,
+  WatchlistSafeArea,
+  WatchlistHeader,
+  WatchlistTitle,
+} from '@/app/styles/WatchlistStyles';
 
-export default function WatchlistScreen() {
+export default function WatchlistScreenPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -20,23 +19,20 @@ export default function WatchlistScreen() {
   }
 
   return (
-    <ThemedView style={SharedStyles.container} testID="watchlist-screen">
-      <SafeAreaView style={SharedStyles.safeArea}>
-        <View
-          style={[SharedStyles.screenHeader, SharedStyles.screenHeaderWithActions]}
-          className={screenHeaderBorderClassName}
-        >
-          <ThemedText style={SharedStyles.screenTitle}>Watchlist</ThemedText>
+    <WatchlistScreen testID="watchlist-screen">
+      <WatchlistSafeArea>
+        <WatchlistHeader>
+          <WatchlistTitle>Watchlist</WatchlistTitle>
           <AddWatchlistButton onPress={() => setModalVisible(true)} />
-        </View>
+        </WatchlistHeader>
         <WatchlistList refreshTrigger={refreshTrigger} />
-      </SafeAreaView>
+      </WatchlistSafeArea>
 
       <AddWatchlistModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSuccess={handleSuccess}
       />
-    </ThemedView>
+    </WatchlistScreen>
   );
 }

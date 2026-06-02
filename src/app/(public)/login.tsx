@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
-import { Button, TextInput, View } from 'react-native';
+import { Button } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useTheme } from '@/hooks/use-theme';
+import {
+  LoginScreen,
+  LoginTitle,
+  LoginError,
+  LoginInput,
+  LoginFooterRow,
+} from '@/app/styles/LoginStyles';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const theme = useTheme();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace('/profile');
+    }
+  }, [authLoading, user, router]);
 
   async function onSubmit() {
     setError(null);
@@ -29,54 +39,35 @@ export default function LoginPage() {
   }
 
   return (
-    <ThemedView
-      testID="login-screen"
-      className="flex-1 p-4 justify-center items-stretch"
-    >
-      <ThemedText className="text-2xl mb-3">Login</ThemedText>
-      {error ? (
-        <ThemedText className="text-red-500 mb-2">{error}</ThemedText>
-      ) : null}
-      <TextInput
+    <LoginScreen testID="login-screen">
+      <LoginTitle>Login</LoginTitle>
+      {error ? <LoginError>{error}</LoginError> : null}
+      <LoginInput
         testID="login-email-input"
         placeholder="Email"
-        placeholderTextColor={theme.textSecondary}
         value={email}
         onChangeText={setEmail}
-        className="w-full min-h-[44px] border rounded-md px-3 py-2 my-2"
-        style={{
-          backgroundColor: theme.backgroundElement,
-          color: theme.text,
-          borderColor: theme.backgroundSelected,
-        }}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
+      <LoginInput
         testID="login-password-input"
         placeholder="Password"
-        placeholderTextColor={theme.textSecondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        className="w-full min-h-[44px] border rounded-md px-3 py-2 my-2"
-        style={{
-          backgroundColor: theme.backgroundElement,
-          color: theme.text,
-          borderColor: theme.backgroundSelected,
-        }}
       />
       <Button
         title={loading ? 'Logging in...' : 'Login'}
         onPress={onSubmit}
         disabled={loading}
       />
-      <View className="flex-row mt-3 items-center flex-wrap">
+      <LoginFooterRow>
         <ThemedText>{"Don't have an account? "}</ThemedText>
         <Link href="/register">
           <ThemedText type="linkPrimary">Register</ThemedText>
         </Link>
-      </View>
-    </ThemedView>
+      </LoginFooterRow>
+    </LoginScreen>
   );
 }

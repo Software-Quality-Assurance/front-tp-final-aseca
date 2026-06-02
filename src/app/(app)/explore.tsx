@@ -1,54 +1,41 @@
 import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 import React from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Platform } from 'react-native';
 
 import { ExternalLink } from '@/components/external-link';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import {
+  ExploreScroll,
+  ExploreContainer,
+  ExploreTitleSection,
+  ExploreSubtitleText,
+  ExploreLinkPressable,
+  ExploreLinkButton,
+  ExploreSections,
+  ExploreCollapsibleContent,
+  exploreImageTutorialStyle,
+  exploreImageReactStyle,
+} from '@/app/styles/ExploreStyles';
 
 export default function TabTwoScreen() {
-  const safeAreaInsets = useSafeAreaInsets();
-  const insets = {
-    ...safeAreaInsets,
-    bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
-  };
   const theme = useTheme();
 
-  const contentPlatformStyle = Platform.select({
-    android: {
-      paddingTop: insets.top,
-      paddingLeft: insets.left,
-      paddingRight: insets.right,
-      paddingBottom: insets.bottom,
-    },
-    web: {
-      paddingTop: Spacing.six,
-      paddingBottom: Spacing.four,
-    },
-  });
-
   return (
-    <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}
-      contentInset={insets}
-      contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
-    >
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.titleContainer}>
+    <ExploreScroll>
+      <ExploreContainer>
+        <ExploreTitleSection>
           <ThemedText type="subtitle">Explore</ThemedText>
-          <ThemedText style={styles.centerText} themeColor="textSecondary">
+          <ExploreSubtitleText>
             This starter app includes example{'\n'}code to help you get started.
-          </ThemedText>
+          </ExploreSubtitleText>
 
           <ExternalLink href="https://docs.expo.dev" asChild>
-            <Pressable style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedView type="backgroundElement" style={styles.linkButton}>
+            <ExploreLinkPressable>
+              <ExploreLinkButton>
                 <ThemedText type="link">Expo documentation</ThemedText>
                 <SymbolView
                   tintColor={theme.text}
@@ -59,12 +46,12 @@ export default function TabTwoScreen() {
                   }}
                   size={12}
                 />
-              </ThemedView>
-            </Pressable>
+              </ExploreLinkButton>
+            </ExploreLinkPressable>
           </ExternalLink>
-        </ThemedView>
+        </ExploreTitleSection>
 
-        <ThemedView style={styles.sectionsWrapper}>
+        <ExploreSections>
           <Collapsible title="File-based routing">
             <ThemedText type="small">
               This app has two screens:{' '}
@@ -82,10 +69,7 @@ export default function TabTwoScreen() {
           </Collapsible>
 
           <Collapsible title="Android, iOS, and web support">
-            <ThemedView
-              type="backgroundElement"
-              style={styles.collapsibleContent}
-            >
+            <ExploreCollapsibleContent>
               <ThemedText type="small">
                 You can open this project on Android, iOS, and the web. To open
                 the web version, press{' '}
@@ -94,9 +78,9 @@ export default function TabTwoScreen() {
               </ThemedText>
               <Image
                 source={require('@/assets/images/tutorial-web.png')}
-                style={styles.imageTutorial}
+                style={exploreImageTutorialStyle}
               />
-            </ThemedView>
+            </ExploreCollapsibleContent>
           </Collapsible>
 
           <Collapsible title="Images">
@@ -108,7 +92,7 @@ export default function TabTwoScreen() {
             </ThemedText>
             <Image
               source={require('@/assets/images/react-logo.png')}
-              style={styles.imageReact}
+              style={exploreImageReactStyle}
             />
             <ExternalLink href="https://reactnative.dev/docs/images">
               <ThemedText type="linkPrimary">Learn more</ThemedText>
@@ -138,63 +122,9 @@ export default function TabTwoScreen() {
               library to animate opening this hint.
             </ThemedText>
           </Collapsible>
-        </ThemedView>
+        </ExploreSections>
         {Platform.OS === 'web' && <WebBadge />}
-      </ThemedView>
-    </ScrollView>
+      </ExploreContainer>
+    </ExploreScroll>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  contentContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  container: {
-    maxWidth: MaxContentWidth,
-    flexGrow: 1,
-  },
-  titleContainer: {
-    gap: Spacing.three,
-    alignItems: 'center',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.six,
-  },
-  centerText: {
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.7,
-  },
-  linkButton: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.five,
-    justifyContent: 'center',
-    gap: Spacing.one,
-    alignItems: 'center',
-  },
-  sectionsWrapper: {
-    gap: Spacing.five,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
-  },
-  collapsibleContent: {
-    alignItems: 'center',
-  },
-  imageTutorial: {
-    width: '100%',
-    aspectRatio: 296 / 171,
-    borderRadius: Spacing.three,
-    marginTop: Spacing.two,
-  },
-  imageReact: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-  },
-});

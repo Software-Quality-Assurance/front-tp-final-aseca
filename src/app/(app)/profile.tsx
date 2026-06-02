@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, TextInput, View, Platform } from 'react-native';
+import { Alert, Button, Platform } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useTheme } from '@/hooks/use-theme';
+import {
+  ProfileScreen,
+  ProfileTitle,
+  ProfileUserId,
+  ProfileMessage,
+  ProfileInput,
+  ProfileSpacer,
+} from '@/app/styles/ProfileStyles';
 
 export default function ProfilePage() {
-  const { user, updateProfile, deleteAccount, logout } = useAuth();
+  const { user, loading, updateProfile, deleteAccount, logout } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState(user?.email ?? '');
   const [password, setPassword] = useState('');
   const [saving, setSaving] = useState(false);
-  const theme = useTheme();
 
   useEffect(() => {
     setEmail(user?.email ?? '');
@@ -62,58 +66,53 @@ export default function ProfilePage() {
     };
 
     if (Platform.OS === 'web') {
-      if (window.confirm('Are you sure you want to delete your account?')) {
+      const confirmed = window.confirm(
+        'Are you sure you want to delete your account?'
+      );
+      if (confirmed) {
         await performDelete();
       }
     } else {
       Alert.alert('Confirm', 'Are you sure you want to delete your account?', [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: performDelete },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: performDelete,
+        },
       ]);
     }
   }
 
-  if (!user) return null;
+  if (loading) return <ProfileMessage>Loading...</ProfileMessage>;
+  if (!user)
+    return <ProfileMessage>Not authenticated. Please log in.</ProfileMessage>;
 
   return (
-    <ThemedView testID="profile-screen" className="flex-1 p-4">
-      <ThemedText className="text-2xl mb-3">Profile</ThemedText>
-      <ThemedText className="mb-2">ID: {user?.id}</ThemedText>
-      <TextInput
+    <ProfileScreen testID="profile-screen">
+      <ProfileTitle>Profile</ProfileTitle>
+      <ProfileUserId>ID: {user.id}</ProfileUserId>
+      <ProfileInput
         testID="profile-email-input"
         placeholder="Email"
-        placeholderTextColor={theme.textSecondary}
         value={email}
         onChangeText={setEmail}
-        className="w-full min-h-[44px] border rounded-md px-3 py-2 my-2"
-        style={{
-          backgroundColor: theme.backgroundElement,
-          color: theme.text,
-          borderColor: theme.backgroundSelected,
-        }}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
+      <ProfileInput
         testID="profile-password-input"
         placeholder="New password (leave blank to keep)"
-        placeholderTextColor={theme.textSecondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        className="w-full min-h-[44px] border rounded-md px-3 py-2 my-2"
-        style={{
-          backgroundColor: theme.backgroundElement,
-          color: theme.text,
-          borderColor: theme.backgroundSelected,
-        }}
       />
       <Button
         title={saving ? 'Saving...' : 'Save changes'}
         onPress={doSave}
         disabled={saving}
       />
-      <View className="h-2" />
+      <ProfileSpacer />
       <Button
         title="Logout"
         onPress={async () => {
@@ -121,8 +120,8 @@ export default function ProfilePage() {
           router.push('/login');
         }}
       />
-      <View className="h-2" />
+      <ProfileSpacer />
       <Button title="Delete account" color="red" onPress={doDelete} />
-    </ThemedView>
+    </ProfileScreen>
   );
 }
