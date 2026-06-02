@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useRouter, useFocusEffect } from 'expo-router';
-import { Button, TextInput, View, StyleSheet } from 'react-native';
+import { Button, TextInput, View } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
+import { styles, themedInput } from '@/styles/register.styles';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -54,14 +55,7 @@ export default function RegisterPage() {
         placeholderTextColor={theme.textSecondary}
         value={email}
         onChangeText={setEmail}
-        style={[
-          styles.input,
-          {
-            backgroundColor: theme.backgroundElement,
-            color: theme.text,
-            borderColor: theme.backgroundSelected,
-          },
-        ]}
+        style={[styles.input, themedInput(theme)]}
         keyboardType="email-address"
         autoCapitalize="none"
       />
@@ -72,14 +66,7 @@ export default function RegisterPage() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={[
-          styles.input,
-          {
-            backgroundColor: theme.backgroundElement,
-            color: theme.text,
-            borderColor: theme.backgroundSelected,
-          },
-        ]}
+        style={[styles.input, themedInput(theme)]}
       />
       <Button
         title={loading ? 'Creating...' : 'Create account'}
@@ -95,30 +82,3 @@ export default function RegisterPage() {
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-    alignItems: 'stretch',
-  },
-  title: { fontSize: 24, marginBottom: 12 },
-  input: {
-    width: '100%',
-    minHeight: 44,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginVertical: 8,
-    borderRadius: 6,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 12,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  error: { color: 'red', marginBottom: 8 },
-  success: { color: 'green', marginBottom: 8 },
-});

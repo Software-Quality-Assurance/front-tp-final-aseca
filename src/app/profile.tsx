@@ -4,7 +4,6 @@ import {
   Button,
   TextInput,
   View,
-  StyleSheet,
   Platform,
 } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,6 +11,7 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
+import { styles, themedInput } from '@/styles/profile.styles';
 
 export default function ProfilePage() {
   const { user, loading, updateProfile, deleteAccount, logout } = useAuth();
@@ -88,10 +88,10 @@ export default function ProfilePage() {
   }
 
   if (loading)
-    return <ThemedText style={{ padding: 16 }}>Loading...</ThemedText>;
+    return <ThemedText style={styles.message}>Loading...</ThemedText>;
   if (!user)
     return (
-      <ThemedText style={{ padding: 16 }}>
+      <ThemedText style={styles.message}>
         Not authenticated. Please log in.
       </ThemedText>
     );
@@ -106,14 +106,7 @@ export default function ProfilePage() {
         placeholderTextColor={theme.textSecondary}
         value={email}
         onChangeText={setEmail}
-        style={[
-          styles.input,
-          {
-            backgroundColor: theme.backgroundElement,
-            color: theme.text,
-            borderColor: theme.backgroundSelected,
-          },
-        ]}
+        style={[styles.input, themedInput(theme)]}
         keyboardType="email-address"
         autoCapitalize="none"
       />
@@ -124,21 +117,14 @@ export default function ProfilePage() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={[
-          styles.input,
-          {
-            backgroundColor: theme.backgroundElement,
-            color: theme.text,
-            borderColor: theme.backgroundSelected,
-          },
-        ]}
+        style={[styles.input, themedInput(theme)]}
       />
       <Button
         title={saving ? 'Saving...' : 'Save changes'}
         onPress={doSave}
         disabled={saving}
       />
-      <View style={{ height: 8 }} />
+      <View style={styles.spacer} />
       <Button
         title="Logout"
         onPress={async () => {
@@ -146,22 +132,8 @@ export default function ProfilePage() {
           router.push('/login');
         }}
       />
-      <View style={{ height: 8 }} />
+      <View style={styles.spacer} />
       <Button title="Delete account" color="red" onPress={doDelete} />
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: 'flex-start' },
-  title: { fontSize: 24, marginBottom: 12 },
-  input: {
-    width: '100%',
-    minHeight: 44,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginVertical: 8,
-    borderRadius: 6,
-  },
-});
