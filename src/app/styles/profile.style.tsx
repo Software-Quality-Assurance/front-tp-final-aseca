@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { AuthInput } from '@/app/styles/AuthInput';
+import { AuthInput } from '@/app/styles/auth-input.style';
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, justifyContent: 'flex-start' },

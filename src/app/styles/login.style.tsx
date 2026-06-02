@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { AuthInput } from '@/app/styles/AuthInput';
+import { AuthInput } from '@/app/styles/auth-input.style';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   error: { color: 'red', marginBottom: 8 },
-  success: { color: 'green', marginBottom: 8 },
 });
 
 type ScreenProps = {
@@ -27,7 +26,7 @@ type ScreenProps = {
   testID?: string;
 };
 
-export function RegisterScreen({ children, testID }: ScreenProps) {
+export function LoginScreen({ children, testID }: ScreenProps) {
   return (
     <ThemedView testID={testID} style={styles.container}>
       {children}
@@ -35,20 +34,16 @@ export function RegisterScreen({ children, testID }: ScreenProps) {
   );
 }
 
-export function RegisterTitle({ children }: { children: string }) {
+export function LoginTitle({ children }: { children: string }) {
   return <ThemedText style={styles.title}>{children}</ThemedText>;
 }
 
-export function RegisterError({ children }: { children: string }) {
+export function LoginError({ children }: { children: string }) {
   return <ThemedText style={styles.error}>{children}</ThemedText>;
 }
 
-export function RegisterSuccess({ children }: { children: string }) {
-  return <ThemedText style={styles.success}>{children}</ThemedText>;
-}
+export { AuthInput as LoginInput };
 
-export { AuthInput as RegisterInput };
-
-export function RegisterFooterRow({ children }: { children: React.ReactNode }) {
+export function LoginFooterRow({ children }: { children: React.ReactNode }) {
   return <View style={styles.row}>{children}</View>;
 }

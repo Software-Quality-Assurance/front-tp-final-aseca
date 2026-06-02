@@ -9,7 +9,7 @@ import {
   ProfileMessage,
   ProfileInput,
   ProfileSpacer,
-} from '@/app/styles/ProfileStyles';
+} from '@/app/styles/profile.style';
 
 export default function ProfilePage() {
   const { user, loading, updateProfile, deleteAccount, logout } = useAuth();

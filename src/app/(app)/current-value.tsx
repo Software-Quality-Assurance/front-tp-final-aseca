@@ -6,7 +6,7 @@ import {
   CurrentValueHeader,
   CurrentValueTitle,
   CurrentValueCenteredContent,
-} from '@/app/styles/CurrentValueStyles';
+} from '@/app/styles/current-value.style';
 
 export default function CurrentValueScreenPage() {
   return (

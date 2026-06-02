@@ -6,7 +6,7 @@ import {
   HistoryHeader,
   HistoryTitle,
   HistoryCenteredContent,
-} from '@/app/styles/HistoryStyles';
+} from '@/app/styles/history.style';
 
 export default function HistoryScreenPage() {
   return (

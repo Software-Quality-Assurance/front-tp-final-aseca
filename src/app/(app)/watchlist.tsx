@@ -7,7 +7,7 @@ import {
   WatchlistSafeArea,
   WatchlistHeader,
   WatchlistTitle,
-} from '@/app/styles/WatchlistStyles';
+} from '@/app/styles/watchlist.style';
 
 export default function WatchlistScreenPage() {
   const [modalVisible, setModalVisible] = useState(false);

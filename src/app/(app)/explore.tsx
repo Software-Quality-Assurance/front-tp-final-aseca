@@ -19,7 +19,7 @@ import {
   ExploreCollapsibleContent,
   exploreImageTutorialStyle,
   exploreImageReactStyle,
-} from '@/app/styles/ExploreStyles';
+} from '@/app/styles/explore.style';
 
 export default function TabTwoScreen() {
   const theme = useTheme();

@@ -9,7 +9,7 @@ import {
   LoginError,
   LoginInput,
   LoginFooterRow,
-} from '@/app/styles/LoginStyles';
+} from '@/app/styles/login.style';
 
 export default function LoginPage() {
   const { login, user, loading: authLoading } = useAuth();

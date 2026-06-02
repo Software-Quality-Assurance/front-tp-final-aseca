@@ -11,7 +11,7 @@ import {
   PortfolioLinkSection,
   PortfolioLinkButton,
   PortfolioContent,
-} from '@/app/styles/PortfolioStyles';
+} from '@/app/styles/portfolio.style';
 
 export default function PortfolioScreenPage() {
   const router = useRouter();

@@ -10,7 +10,7 @@ import {
   RegisterSuccess,
   RegisterInput,
   RegisterFooterRow,
-} from '@/app/styles/RegisterStyles';
+} from '@/app/styles/register.style';
 
 export default function RegisterPage() {
   const { register } = useAuth();
