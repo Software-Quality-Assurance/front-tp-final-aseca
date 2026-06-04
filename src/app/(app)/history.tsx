@@ -1,23 +1,46 @@
 import React from 'react';
-import { ThemedText } from '@/components/themed-text';
+import { useHistory } from '@/hooks/use-history';
+import { HistoryFilterBar } from '@/components/portfolio/history/HistoryFilterBar';
+import { HistoryList } from '@/components/portfolio/history/HistoryList';
 import {
   HistoryScreen,
   HistorySafeArea,
   HistoryHeader,
   HistoryTitle,
-  HistoryCenteredContent,
 } from '@/app/styles/history.style';
 
 export default function HistoryScreenPage() {
+  const {
+    grouped,
+    isLoading,
+    error,
+    filterType,
+    filterStatus,
+    setFilterType,
+    setFilterStatus,
+    refresh,
+  } = useHistory();
+
   return (
     <HistoryScreen>
       <HistorySafeArea>
         <HistoryHeader>
           <HistoryTitle>History</HistoryTitle>
         </HistoryHeader>
-        <HistoryCenteredContent>
-          <ThemedText themeColor="textSecondary">Coming soon</ThemedText>
-        </HistoryCenteredContent>
+
+        <HistoryFilterBar
+          filterType={filterType}
+          filterStatus={filterStatus}
+          onTypeChange={setFilterType}
+          onStatusChange={setFilterStatus}
+        />
+
+        <HistoryList
+          grouped={grouped}
+          isLoading={isLoading}
+          error={error}
+          onRefresh={refresh}
+        />
       </HistorySafeArea>
     </HistoryScreen>
   );
