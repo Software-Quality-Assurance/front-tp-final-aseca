@@ -1,23 +1,37 @@
 import React from 'react';
-import { ThemedText } from '@/components/themed-text';
 import {
   CurrentValueScreen,
   CurrentValueSafeArea,
   CurrentValueHeader,
   CurrentValueTitle,
-  CurrentValueCenteredContent,
+  CurrentValueContent,
 } from '@/app/styles/current-value.style';
+import { CurrentValueSummary } from '@/components/portfolio/current-value/CurrentValueSummary';
+import { CurrentValuePositionCard } from '@/components/portfolio/current-value/CurrentValuePositionCard';
 
 export default function CurrentValueScreenPage() {
   return (
-    <CurrentValueScreen>
+    <CurrentValueScreen testID="current-value-screen">
       <CurrentValueSafeArea>
         <CurrentValueHeader>
           <CurrentValueTitle>Current Value</CurrentValueTitle>
         </CurrentValueHeader>
-        <CurrentValueCenteredContent>
-          <ThemedText themeColor="textSecondary">Coming soon</ThemedText>
-        </CurrentValueCenteredContent>
+
+        <CurrentValueContent>
+          <CurrentValueSummary totalValue={125430} totalPnL={8430} />
+
+          <CurrentValuePositionCard
+            ticker="AAPL"
+            currentValue={35000}
+            profitLoss={2300}
+          />
+
+          <CurrentValuePositionCard
+            ticker="TSLA"
+            currentValue={18500}
+            profitLoss={-500}
+          />
+        </CurrentValueContent>
       </CurrentValueSafeArea>
     </CurrentValueScreen>
   );

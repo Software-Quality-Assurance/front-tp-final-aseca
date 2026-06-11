@@ -33,14 +33,29 @@ export default function AppLayout() {
           tabBarActiveTintColor: colors.text,
         }}
       >
-        <Tabs.Screen name="index" options={{ title: 'Portfolio' }} />
+        <Tabs.Screen
+          name="index"
+          options={{ title: 'Portfolio', tabBarTestID: 'nav-portfolio' } as any}
+        />
         <Tabs.Screen
           name="current-value"
-          options={{ title: 'Current Value' }}
+          options={{
+            title: 'Current Value',
+            tabBarTestID: 'nav-current-value',
+          } as any}
         />
-        <Tabs.Screen name="history" options={{ title: 'History' }} />
-        <Tabs.Screen name="watchlist" options={{ title: 'Watchlist' }} />
-        <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
+        <Tabs.Screen
+          name="history"
+          options={{ title: 'History', tabBarTestID: 'nav-history' } as any}
+        />
+        <Tabs.Screen
+          name="watchlist"
+          options={{ title: 'Watchlist', tabBarTestID: 'nav-watchlist' } as any}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{ title: 'Profile', tabBarTestID: 'nav-profile' } as any}
+        />
       </Tabs>
     </AuthGuard>
   );

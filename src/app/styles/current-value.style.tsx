@@ -7,8 +7,14 @@ export const currentValueHeaderBorderClassName =
   'border-b border-gray-200 dark:border-gray-800';
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  safeArea: { flex: 1 },
+  container: {
+    flex: 1,
+  },
+
+  safeArea: {
+    flex: 1,
+  },
+
   screenHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -16,11 +22,19 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingBottom: 16,
   },
+
   screenTitle: {
     fontSize: 36,
     fontWeight: '700',
     letterSpacing: -0.5,
   },
+
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 16,
+  },
+
   centeredContent: {
     flex: 1,
     alignItems: 'center',
@@ -30,10 +44,13 @@ const styles = StyleSheet.create({
 
 export function CurrentValueScreen({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <ThemedView style={styles.container}>{children}</ThemedView>;
+  ...props
+}: ViewProps & { children: React.ReactNode }) {
+  return (
+    <ThemedView style={styles.container} {...props}>
+      {children}
+    </ThemedView>
+  );
 }
 
 export function CurrentValueSafeArea({
@@ -61,6 +78,14 @@ export function CurrentValueHeader({
 
 export function CurrentValueTitle({ children }: { children: string }) {
   return <ThemedText style={styles.screenTitle}>{children}</ThemedText>;
+}
+
+export function CurrentValueContent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <View style={styles.content}>{children}</View>;
 }
 
 export function CurrentValueCenteredContent({

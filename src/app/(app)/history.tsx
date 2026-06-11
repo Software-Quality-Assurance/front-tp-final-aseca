@@ -22,7 +22,7 @@ export default function HistoryScreenPage() {
   } = useHistory();
 
   return (
-    <HistoryScreen>
+    <HistoryScreen testID="history-screen">
       <HistorySafeArea>
         <HistoryHeader>
           <HistoryTitle>History</HistoryTitle>
