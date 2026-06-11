@@ -1,37 +1,57 @@
 /// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+import { endpoints } from './endpoints';
+
+export const AUTH_TOKEN_KEY = 'app_token_v1';
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(email: string, password: string, path?: string): Chainable<void>;
+      waitForScreen(testId: string): Chainable<void>;
+      clickButton(label: string | RegExp): Chainable<void>;
+      getAuthToken(email: string, password: string): Chainable<string>;
+    }
+  }
+}
+
+Cypress.Commands.add('waitForScreen', (testId: string) => {
+  cy.get('[data-testid="splash-overlay"]', { timeout: 10000 }).should(
+    'not.exist'
+  );
+  cy.get(`[data-testid="${testId}"]`, { timeout: 10000 }).should('be.visible');
+});
+
+Cypress.Commands.add('clickButton', (label: string | RegExp) => {
+  cy.contains('[role="button"]', label, { timeout: 10000 }).click({
+    force: true,
+  });
+});
+
+Cypress.Commands.add('getAuthToken', (email: string, password: string) => {
+  cy.request({
+    method: 'POST',
+    url: endpoints.auth.login(),
+    body: { email, password },
+    headers: { 'Content-Type': 'application/json' },
+  }).then((res) => {
+    expect(res.status).to.eq(200);
+    return res.body.token as string;
+  });
+});
+
+// Logs in via API and seeds localStorage before the app loads.
+Cypress.Commands.add(
+  'login',
+  (email: string, password: string, path: string = '/') => {
+    cy.getAuthToken(email, password).then((token) => {
+      cy.visit(path, {
+        onBeforeLoad(win) {
+          win.localStorage.setItem(AUTH_TOKEN_KEY, token);
+        },
+      });
+    });
+  }
+);
+
+export {};

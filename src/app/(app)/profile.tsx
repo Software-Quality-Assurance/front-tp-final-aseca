@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, TextInput, View, Platform } from 'react-native';
+import { Alert, Button, Platform } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useTheme } from '@/hooks/use-theme';
-import { styles, themedInput } from '@/styles/profile.styles';
+import {
+  ProfileScreen,
+  ProfileTitle,
+  ProfileUserId,
+  ProfileMessage,
+  ProfileInput,
+  ProfileSpacer,
+} from '@/app/styles/profile.style';
 
 export default function ProfilePage() {
   const { user, loading, updateProfile, deleteAccount, logout } = useAuth();
@@ -13,7 +17,6 @@ export default function ProfilePage() {
   const [email, setEmail] = useState(user?.email ?? '');
   const [password, setPassword] = useState('');
   const [saving, setSaving] = useState(false);
-  const theme = useTheme();
 
   useEffect(() => {
     setEmail(user?.email ?? '');
@@ -81,44 +84,37 @@ export default function ProfilePage() {
     }
   }
 
-  if (loading)
-    return <ThemedText style={styles.message}>Loading...</ThemedText>;
+  if (loading) return <ProfileMessage>Loading...</ProfileMessage>;
   if (!user)
-    return (
-      <ThemedText style={styles.message}>
-        Not authenticated. Please log in.
-      </ThemedText>
-    );
+    return <ProfileMessage>Not authenticated. Please log in.</ProfileMessage>;
 
   return (
-    <ThemedView testID="profile-screen" style={styles.container}>
-      <ThemedText style={styles.title}>Profile</ThemedText>
-      <ThemedText>ID: {user.id}</ThemedText>
-      <TextInput
+    <ProfileScreen testID="profile-screen">
+      <ProfileTitle>Profile</ProfileTitle>
+      <ProfileUserId>ID: {user.id}</ProfileUserId>
+      <ProfileInput
         testID="profile-email-input"
         placeholder="Email"
-        placeholderTextColor={theme.textSecondary}
         value={email}
         onChangeText={setEmail}
-        style={[styles.input, themedInput(theme)]}
-        keyboardType="email-address"
+        keyboardType={Platform.OS === 'web' ? 'default' : 'email-address'}
         autoCapitalize="none"
+        editable={!loading && !saving}
       />
-      <TextInput
+      <ProfileInput
         testID="profile-password-input"
         placeholder="New password (leave blank to keep)"
-        placeholderTextColor={theme.textSecondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={[styles.input, themedInput(theme)]}
+        editable={!loading && !saving}
       />
       <Button
         title={saving ? 'Saving...' : 'Save changes'}
         onPress={doSave}
         disabled={saving}
       />
-      <View style={styles.spacer} />
+      <ProfileSpacer />
       <Button
         title="Logout"
         onPress={async () => {
@@ -126,8 +122,8 @@ export default function ProfilePage() {
           router.push('/login');
         }}
       />
-      <View style={styles.spacer} />
+      <ProfileSpacer />
       <Button title="Delete account" color="red" onPress={doDelete} />
-    </ThemedView>
+    </ProfileScreen>
   );
 }

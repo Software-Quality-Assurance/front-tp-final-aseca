@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
-import { Button, TextInput, View } from 'react-native';
+import { Button, Platform } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useTheme } from '@/hooks/use-theme';
-import { styles, themedInput } from '@/styles/login.styles';
+import {
+  LoginScreen,
+  LoginTitle,
+  LoginError,
+  LoginInput,
+  LoginFooterRow,
+} from '@/app/styles/login.style';
 
 export default function LoginPage() {
   const { login, user, loading: authLoading } = useAuth();
@@ -14,7 +18,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const theme = useTheme();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -36,39 +39,37 @@ export default function LoginPage() {
   }
 
   return (
-    <ThemedView testID="login-screen" style={styles.container}>
-      <ThemedText style={styles.title}>Login</ThemedText>
-      {error ? <ThemedText style={styles.error}>{error}</ThemedText> : null}
-      <TextInput
+    <LoginScreen testID="login-screen">
+      <LoginTitle>Login</LoginTitle>
+      {error ? <LoginError>{error}</LoginError> : null}
+      <LoginInput
         testID="login-email-input"
         placeholder="Email"
-        placeholderTextColor={theme.textSecondary}
         value={email}
         onChangeText={setEmail}
-        style={[styles.input, themedInput(theme)]}
-        keyboardType="email-address"
+        keyboardType={Platform.OS === 'web' ? 'default' : 'email-address'}
         autoCapitalize="none"
+        editable={!authLoading && !loading}
       />
-      <TextInput
+      <LoginInput
         testID="login-password-input"
         placeholder="Password"
-        placeholderTextColor={theme.textSecondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={[styles.input, themedInput(theme)]}
+        editable={!authLoading && !loading}
       />
       <Button
         title={loading ? 'Logging in...' : 'Login'}
         onPress={onSubmit}
         disabled={loading}
       />
-      <View style={styles.row}>
+      <LoginFooterRow>
         <ThemedText>{"Don't have an account? "}</ThemedText>
         <Link href="/register">
           <ThemedText type="linkPrimary">Register</ThemedText>
         </Link>
-      </View>
-    </ThemedView>
+      </LoginFooterRow>
+    </LoginScreen>
   );
 }

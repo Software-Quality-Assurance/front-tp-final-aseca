@@ -13,5 +13,18 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
 import './commands';
+
+Cypress.on('window:before:load', (win) => {
+  const originalError = win.console.error;
+  win.console.error = function (...args) {
+    Cypress.log({
+      name: 'console.error',
+      displayName: 'ERR',
+      message: args
+        .map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a)))
+        .join(' '),
+    });
+    originalError.apply(win.console, args);
+  };
+});
