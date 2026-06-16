@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type ViewProps } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 
 const styles = StyleSheet.create({
@@ -26,14 +26,14 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = {
+type Props = ViewProps & {
   totalValue: number;
   totalPnL: number;
 };
 
-export function CurrentValueSummary({ totalValue, totalPnL }: Props) {
+export function CurrentValueSummary({ totalValue, totalPnL, ...props }: Props) {
   return (
-    <View style={styles.container}>
+    <View testID="current-value-summary" style={styles.container} {...props}>
       <ThemedText themeColor="textSecondary">Portfolio Value</ThemedText>
 
       <ThemedText style={styles.value}>${totalValue.toFixed(2)}</ThemedText>

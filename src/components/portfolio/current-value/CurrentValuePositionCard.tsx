@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type ViewProps } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 
 const styles = StyleSheet.create({
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = {
+type Props = ViewProps & {
   ticker: string;
   currentValue: number;
   profitLoss: number;
@@ -40,9 +40,14 @@ export function CurrentValuePositionCard({
   ticker,
   currentValue,
   profitLoss,
+  ...props,
 }: Props) {
   return (
-    <View style={styles.card}>
+    <View
+      testID={`current-value-position-${ticker}`}
+      style={styles.card}
+      {...props}
+    >
       <View style={styles.row}>
         <ThemedText style={styles.ticker}>{ticker}</ThemedText>
 

@@ -1,5 +1,10 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  ViewProps,
+} from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
@@ -90,8 +95,13 @@ export function CurrentValueContent({
 
 export function CurrentValueCenteredContent({
   children,
-}: {
+  ...props
+}: ViewProps & {
   children: React.ReactNode;
 }) {
-  return <View style={styles.centeredContent}>{children}</View>;
+  return (
+    <View style={styles.centeredContent} {...props}>
+      {children}
+    </View>
+  );
 }
