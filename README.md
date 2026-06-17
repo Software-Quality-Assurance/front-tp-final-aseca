@@ -23,6 +23,30 @@ In the output, you'll find options to open the app in a
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
+## Appium E2E on Android
+
+Appium does not run against Expo Go. This project expects an Android emulator/device with either:
+
+- the app already installed with `npm run android`, or
+- a debug APK available at `android/app/build/outputs/apk/debug/app-debug.apk`, or pointed by `APPIUM_APK_PATH`
+- Android SDK installed. The project auto-detects the default Windows SDK path, otherwise set `ANDROID_HOME` or `ANDROID_SDK_ROOT`
+
+Recommended flow:
+
+```bash
+npm run android:prebuild
+npm run android
+npm run appium:doctor
+npm run test:appium
+```
+
+Optional environment variables:
+
+```bash
+APPIUM_API_URL=http://localhost:8080
+APPIUM_APK_PATH=C:\path\to\app-debug.apk
+```
+
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
 ## Get a fresh project

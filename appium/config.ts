@@ -1,45 +1,55 @@
+import fs from 'fs';
 import path from 'path';
 
-const APK_PATH =
-  process.env.APPIUM_APK_PATH ??
-  path.resolve(
-    __dirname,
-    '../android/app/build/outputs/apk/debug/app-debug.apk'
-  );
+const ROOT_DIR = path.resolve(__dirname, '..');
+const DEFAULT_APK_PATH = path.join(
+  ROOT_DIR,
+  'android',
+  'app',
+  'build',
+  'outputs',
+  'apk',
+  'debug',
+  'app-debug.apk'
+);
+const APPIUM_BIN = path.join(
+  ROOT_DIR,
+  'node_modules',
+  '.bin',
+  process.platform === 'win32' ? 'appium.cmd' : 'appium'
+);
+const configuredApkPath = process.env.APPIUM_APK_PATH ?? DEFAULT_APK_PATH;
+const hasApkBinary = fs.existsSync(configuredApkPath);
+const useInstalledApp = !hasApkBinary;
+const appiumCapabilities: Record<string, string | number | boolean> = {
+  platformName: 'Android',
+  'appium:automationName': 'UiAutomator2',
+  'appium:appPackage': 'com.anonymous.fronttpfinalaseca',
+  'appium:appActivity': '.MainActivity',
+  'appium:noReset': useInstalledApp,
+  'appium:newCommandTimeout': 120,
+};
+
+if (hasApkBinary) {
+  appiumCapabilities['appium:app'] = configuredApkPath;
+}
 
 const API_URL = process.env.APPIUM_API_URL ?? 'http://localhost:8080';
 
 export const config = {
   runner: 'local' as const,
-  specs: ['./appium/tests/**/*.test.ts'],
+  specs: [path.join(__dirname, 'tests', '**', '*.test.ts')],
   maxInstances: 1,
+  hostname: '127.0.0.1',
+  port: 4723,
+  path: '/',
 
-  capabilities: [
-    {
-      platformName: 'Android',
-      'appium:automationName': 'UiAutomator2',
-      'appium:app': APK_PATH,
-      'appium:appPackage': 'com.anonymous.fronttpfinalaseca',
-      'appium:appActivity': '.MainActivity',
-      'appium:noReset': false,
-      'appium:newCommandTimeout': 120,
-    },
-  ],
+  capabilities: [appiumCapabilities],
 
   logLevel: 'error' as const,
   waitforTimeout: 15000,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
-
-  services: [
-    [
-      'appium',
-      {
-        args: { address: 'localhost', port: 4723 },
-        command: 'node_modules/.bin/appium',
-      },
-    ],
-  ],
 
   framework: 'mocha' as const,
   reporters: ['spec'] as const,
@@ -49,4 +59,19 @@ export const config = {
   },
 
   env: { apiUrl: API_URL },
+  beforeSession: () => {
+    if (!fs.existsSync(APPIUM_BIN)) {
+      throw new Error(`Appium binary not found at ${APPIUM_BIN}. Run npm install.`);
+    }
+
+    if (!hasApkBinary) {
+      console.warn(
+        [
+          `[appium] APK not found at ${configuredApkPath}.`,
+          '[appium] The test run will use the installed app on the emulator/device instead.',
+          '[appium] If the app is not installed yet, run `npm run android` once or set APPIUM_APK_PATH to a built APK.',
+        ].join('\n')
+      );
+    }
+  },
 };
