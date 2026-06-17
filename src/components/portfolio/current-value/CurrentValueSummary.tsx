@@ -29,9 +29,15 @@ const styles = StyleSheet.create({
 type Props = ViewProps & {
   totalValue: number;
   totalPnL: number;
+  totalPnLPercentage: number;
 };
 
-export function CurrentValueSummary({ totalValue, totalPnL, ...props }: Props) {
+export function CurrentValueSummary({
+  totalValue,
+  totalPnL,
+  totalPnLPercentage,
+  ...props
+}: Props) {
   return (
     <View testID="current-value-summary" style={styles.container} {...props}>
       <ThemedText themeColor="textSecondary">Portfolio Value</ThemedText>
@@ -46,7 +52,9 @@ export function CurrentValueSummary({ totalValue, totalPnL, ...props }: Props) {
           },
         ]}
       >
-        {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)}
+        {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)} (
+        {totalPnLPercentage >= 0 ? '+' : ''}
+        {totalPnLPercentage.toFixed(2)}%)
       </ThemedText>
     </View>
   );

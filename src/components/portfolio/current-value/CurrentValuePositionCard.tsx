@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
+  companyName: {
+    fontSize: 12,
+  },
+
   value: {
     fontWeight: '600',
   },
@@ -32,15 +36,19 @@ const styles = StyleSheet.create({
 
 type Props = ViewProps & {
   ticker: string;
-  currentValue: number;
+  companyName: string;
+  currentValue: number | null;
   profitLoss: number;
+  profitLossPercentage: number;
 };
 
 export function CurrentValuePositionCard({
   ticker,
+  companyName,
   currentValue,
   profitLoss,
-  ...props,
+  profitLossPercentage,
+  ...props
 }: Props) {
   return (
     <View
@@ -49,9 +57,16 @@ export function CurrentValuePositionCard({
       {...props}
     >
       <View style={styles.row}>
-        <ThemedText style={styles.ticker}>{ticker}</ThemedText>
+        <View>
+          <ThemedText style={styles.ticker}>{ticker}</ThemedText>
+          <ThemedText themeColor="textSecondary" style={styles.companyName}>
+            {companyName}
+          </ThemedText>
+        </View>
 
-        <ThemedText style={styles.value}>${currentValue.toFixed(2)}</ThemedText>
+        <ThemedText style={styles.value}>
+          {currentValue !== null ? `$${currentValue.toFixed(2)}` : '—'}
+        </ThemedText>
       </View>
 
       <ThemedText
@@ -62,7 +77,9 @@ export function CurrentValuePositionCard({
           },
         ]}
       >
-        {profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)}
+        {profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)} (
+        {profitLossPercentage >= 0 ? '+' : ''}
+        {profitLossPercentage.toFixed(2)}%)
       </ThemedText>
     </View>
   );

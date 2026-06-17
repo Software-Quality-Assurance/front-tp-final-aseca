@@ -7,13 +7,27 @@ import type {
   PositionValue,
 } from '@/actions/types';
 
-export type CurrentValuePosition = PositionValue & PositionProfitLoss;
+export type CurrentValuePosition = {
+  ticker: string;
+  companyName: string;
+  quantity: number;
+  currentPrice: number | null;
+  currentValue: number | null;
+  lastUpdatedAt: string | null;
+  priceSource: string | null;
+  averageCost: number | null;
+  investedCost: number | null;
+  profitLoss: number;
+  profitLossPercentage: number;
+  warning: string | null;
+};
 
 export type CurrentValueSummary = {
   totalValue: number;
+  totalInvestedCost: number;
   totalProfitLoss: number;
   totalProfitLossPercentage: number;
-  lastUpdatedAt: string;
+  lastUpdatedAt: string | null;
 };
 
 type UseCurrentValueReturn = {
@@ -37,9 +51,11 @@ function mergePositions(
 
     return {
       ...position,
-      averageCost: profitLoss?.averageCost ?? 0,
+      averageCost: profitLoss?.averageCost ?? null,
+      investedCost: profitLoss?.investedCost ?? null,
       profitLoss: profitLoss?.profitLoss ?? 0,
-      profitLossPercentage: profitLoss?.profitLossPercentage ?? 0,
+      profitLossPercentage: profitLoss?.returnPercentage ?? 0,
+      warning: position.warning ?? profitLoss?.warning ?? null,
     };
   });
 }
@@ -89,8 +105,9 @@ export function useCurrentValue(): UseCurrentValueReturn {
 
     return {
       totalValue: value.totalValue,
+      totalInvestedCost: profitLoss.totalInvestedCost,
       totalProfitLoss: profitLoss.totalProfitLoss,
-      totalProfitLossPercentage: profitLoss.totalProfitLossPercentage,
+      totalProfitLossPercentage: profitLoss.totalReturnPercentage,
       lastUpdatedAt: value.lastUpdatedAt,
     };
   }, [value, profitLoss]);

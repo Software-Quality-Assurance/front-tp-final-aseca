@@ -54,14 +54,17 @@ export default function CurrentValueScreenPage() {
               <CurrentValueSummary
                 totalValue={summary.totalValue}
                 totalPnL={summary.totalProfitLoss}
+                totalPnLPercentage={summary.totalProfitLossPercentage}
               />
 
               {positions.map((position) => (
                 <CurrentValuePositionCard
                   key={position.ticker}
                   ticker={position.ticker}
+                  companyName={position.companyName}
                   currentValue={position.currentValue}
                   profitLoss={position.profitLoss}
+                  profitLossPercentage={position.profitLossPercentage}
                 />
               ))}
             </>
