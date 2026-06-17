@@ -20,4 +20,11 @@ export const endpoints = {
     base: () => `${api()}/api/watchlist`,
     ticker: (ticker: string) => `${api()}/api/watchlist/${ticker}`,
   },
+  edgar: {
+    search: () => `${api()}/api/edgar/search`,
+    metrics: (ticker: string) => `${api()}/api/edgar/companies/${ticker}/metrics`,
+    filings: (ticker: string) => `${api()}/api/edgar/companies/${ticker}/filings`,
+    history: (ticker: string) => `${api()}/api/edgar/companies/${ticker}/history`,
+    comparison: () => `${api()}/api/edgar/comparison`,
+  },
 };

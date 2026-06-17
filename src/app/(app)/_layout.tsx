@@ -1,17 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useColorScheme } from 'react-native';
-import { Tabs, useRouter } from 'expo-router';
+import { Tabs, Redirect } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
 import { Colors } from '@/constants/theme';
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (loading) return;
-    if (!user) router.replace('/login');
-  }, [user, loading, router]);
 
   if (loading) return null;
 
@@ -40,6 +34,7 @@ export default function AppLayout() {
         />
         <Tabs.Screen name="history" options={{ title: 'History' }} />
         <Tabs.Screen name="watchlist" options={{ title: 'Watchlist' }} />
+        <Tabs.Screen name="explore" options={{ title: 'Explore' }} />
         <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
       </Tabs>
     </AuthGuard>

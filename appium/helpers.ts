@@ -4,8 +4,11 @@ import { browser, $ } from '@wdio/globals';
 export const el = (testId: string) => $(`~${testId}`);
 
 // Endpoints centralizados (mismo patrón que Cypress)
+// wdio v9: config moved from browser.config to browser.options
 const apiUrl = () =>
-  (browser as any).config.env?.apiUrl ?? 'http://localhost:8080';
+  process.env.APPIUM_API_URL ??
+  (browser as any).options?.env?.apiUrl ??
+  'http://localhost:8080';
 
 export const endpoints = {
   auth: {
@@ -44,8 +47,24 @@ export async function getToken(
 }
 
 // Espera a que un elemento con testID sea visible
-export async function waitForElement(testId: string, timeout = 15000) {
-  await el(testId).waitForDisplayed({ timeout });
+// Default timeout raised to 30 s to match global waitforTimeout
+export async function waitForElement(testId: string, timeout = 30000) {
+  // Allow the animated splash overlay (600 ms animation) to finish first
+  await browser.pause(2000);
+  try {
+    await el(testId).waitForDisplayed({ timeout });
+  } catch (err) {
+    // Capture what is actually on screen so we can diagnose failures
+    try {
+      const ts = Date.now();
+      await browser.saveScreenshot(
+        `./appium/screenshots/notfound-${testId}-${ts}.png`
+      );
+    } catch {
+      // ignore screenshot errors
+    }
+    throw err;
+  }
 }
 
 // Escribe texto en un campo

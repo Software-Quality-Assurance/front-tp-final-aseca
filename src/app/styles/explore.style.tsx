@@ -71,7 +71,11 @@ type ScreenProps = {
   children: React.ReactNode;
 };
 
-export function ExploreScroll({ children }: ScreenProps) {
+type ExploreScrollProps = ScreenProps & {
+  testID?: string;
+};
+
+export function ExploreScroll({ children, testID }: ExploreScrollProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
   const insets = {
@@ -94,6 +98,7 @@ export function ExploreScroll({ children }: ScreenProps) {
 
   return (
     <ScrollView
+      testID={testID}
       style={[styles.scrollView, { backgroundColor: theme.background }]}
       contentInset={insets}
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
