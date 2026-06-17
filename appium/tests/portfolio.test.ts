@@ -24,7 +24,7 @@ describe('Portfolio — Feature 5 (Mobile)', () => {
     await typeInto('login-email-input', email);
     await typeInto('login-password-input', password);
     await browser.hideKeyboard();
-    await $('~Login').click();
+    await $('~LOGIN').click();
     await waitForElement('portfolio-add-button');
   });
 
