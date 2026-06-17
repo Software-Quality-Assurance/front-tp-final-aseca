@@ -5,6 +5,7 @@ import type { OperationType } from '@/actions/types';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
+import { COMPANY_PLACEHOLDER } from '@/lib/api';
 
 type Props = {
   visible: boolean;
@@ -125,7 +126,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             </ThemedText>
             <TextInput
               testID="add-position-ticker-input"
-              placeholder="e.g. AAPL"
+              placeholder={`e.g. ${COMPANY_PLACEHOLDER}`}
               placeholderTextColor={theme.textSecondary}
               value={ticker}
               onChangeText={(t) => setTicker(t.toUpperCase())}
