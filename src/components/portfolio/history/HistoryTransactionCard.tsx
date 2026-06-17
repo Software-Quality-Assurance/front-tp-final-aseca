@@ -1,26 +1,21 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { useTheme } from '@/hooks/use-theme';
-import { EnrichedOperation } from '@/hooks/use-history';
+import type { Operation, OperationType } from '@/actions/types';
+import { DeleteHistoryButton } from './DeleteHistoryButton';
 import { styles } from '@/app/styles/history/HistoryTransactionCardStyles';
 
-const STATUS_COLOR: Record<EnrichedOperation['status'], string> = {
-  COMPLETED: '#22c55e',
-  PENDING: '#f59e0b',
-  REJECTED: '#ef4444',
-};
-
 const TYPE_ICON: Record<
-  EnrichedOperation['type'],
+  OperationType,
   React.ComponentProps<typeof MaterialCommunityIcons>['name']
 > = {
   BUY: 'arrow-down-circle',
   SELL: 'arrow-up-circle',
 };
 
-const TYPE_COLOR: Record<EnrichedOperation['type'], string> = {
+const TYPE_COLOR: Record<OperationType, string> = {
   BUY: '#3b82f6',
   SELL: '#8b5cf6',
 };
@@ -45,24 +40,35 @@ function formatDate(isoString: string): string {
 }
 
 interface Props {
-  operation: EnrichedOperation;
+  operation: Operation;
+  onEdit: (operation: Operation) => void;
+  onRefresh: () => void;
 }
 
-export function HistoryTransactionCard({ operation }: Props) {
+export function HistoryTransactionCard({
+  operation,
+  onEdit,
+  onRefresh,
+}: Props) {
   const theme = useTheme();
   const typeColor = TYPE_COLOR[operation.type];
-  const statusColor = STATUS_COLOR[operation.status];
   const typeLabel = operation.type === 'BUY' ? 'Compra' : 'Venta';
 
   return (
     <View
+      testID={`history-item-${operation.ticker}`}
       style={[
         styles.card,
-        { backgroundColor: theme.backgroundElement, borderColor: theme.backgroundSelected },
+        {
+          backgroundColor: theme.backgroundElement,
+          borderColor: theme.backgroundSelected,
+        },
       ]}
     >
       <View style={styles.left}>
-        <View style={[styles.iconWrapper, { backgroundColor: typeColor + '1A' }]}>
+        <View
+          style={[styles.iconWrapper, { backgroundColor: typeColor + '1A' }]}
+        >
           <MaterialCommunityIcons
             name={TYPE_ICON[operation.type]}
             size={22}
@@ -72,7 +78,9 @@ export function HistoryTransactionCard({ operation }: Props) {
         <View style={styles.info}>
           <View style={styles.titleRow}>
             <ThemedText style={styles.ticker}>{operation.ticker}</ThemedText>
-            <View style={[styles.typeBadge, { backgroundColor: typeColor + '1A' }]}>
+            <View
+              style={[styles.typeBadge, { backgroundColor: typeColor + '1A' }]}
+            >
               <ThemedText style={[styles.typeBadgeText, { color: typeColor }]}>
                 {typeLabel}
               </ThemedText>
@@ -81,9 +89,25 @@ export function HistoryTransactionCard({ operation }: Props) {
           <ThemedText style={{ color: theme.textSecondary, fontSize: 12 }}>
             {operation.companyName}
           </ThemedText>
-          <ThemedText style={{ color: theme.textSecondary, fontSize: 12, marginTop: 2 }}>
-            {operation.quantity} acciones · {formatCurrency(operation.unitPrice)} c/u
+          <ThemedText
+            style={{ color: theme.textSecondary, fontSize: 12, marginTop: 2 }}
+          >
+            {operation.quantity} acciones ·{' '}
+            {formatCurrency(operation.unitPrice)} c/u
           </ThemedText>
+
+          <View style={styles.actionsRow}>
+            <TouchableOpacity
+              testID={`edit-history-button-${operation.id}`}
+              style={styles.editButton}
+              onPress={() => onEdit(operation)}
+            >
+              <ThemedText style={{ color: '#3b82f6', fontSize: 12 }}>
+                Edit
+              </ThemedText>
+            </TouchableOpacity>
+            <DeleteHistoryButton operation={operation} onSuccess={onRefresh} />
+          </View>
         </View>
       </View>
 
@@ -91,9 +115,14 @@ export function HistoryTransactionCard({ operation }: Props) {
         <ThemedText style={styles.total}>
           {formatCurrency(operation.totalPrice)}
         </ThemedText>
-        <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
         <ThemedText style={[styles.date, { color: theme.textSecondary }]}>
           {formatDate(operation.timestamp)}
+        </ThemedText>
+        <ThemedText
+          testID="history-item-timestamp"
+          style={{ width: 0, height: 0, opacity: 0 }}
+        >
+          {operation.timestamp}
         </ThemedText>
       </View>
     </View>

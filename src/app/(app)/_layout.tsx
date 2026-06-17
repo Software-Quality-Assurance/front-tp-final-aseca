@@ -39,10 +39,12 @@ export default function AppLayout() {
         />
         <Tabs.Screen
           name="current-value"
-          options={{
-            title: 'Current Value',
-            tabBarTestID: 'nav-current-value',
-          } as any}
+          options={
+            {
+              title: 'Current Value',
+              tabBarTestID: 'nav-current-value',
+            } as any
+          }
         />
         <Tabs.Screen
           name="history"

@@ -32,6 +32,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontWeight: '600',
   },
+
+  warning: {
+    fontSize: 12,
+    color: '#eab308',
+    marginTop: 4,
+  },
 });
 
 type Props = ViewProps & {
@@ -40,6 +46,7 @@ type Props = ViewProps & {
   currentValue: number | null;
   profitLoss: number;
   profitLossPercentage: number;
+  warning: string | null;
 };
 
 export function CurrentValuePositionCard({
@@ -48,6 +55,7 @@ export function CurrentValuePositionCard({
   currentValue,
   profitLoss,
   profitLossPercentage,
+  warning,
   ...props
 }: Props) {
   return (
@@ -81,6 +89,15 @@ export function CurrentValuePositionCard({
         {profitLossPercentage >= 0 ? '+' : ''}
         {profitLossPercentage.toFixed(2)}%)
       </ThemedText>
+
+      {warning ? (
+        <ThemedText
+          testID={`current-value-warning-${ticker}`}
+          style={styles.warning}
+        >
+          {warning}
+        </ThemedText>
+      ) : null}
     </View>
   );
 }

@@ -83,7 +83,9 @@ export function useCurrentValue(): UseCurrentValueReturn {
       setValue(nextValue);
       setProfitLoss(nextProfitLoss);
     } catch {
-      setError('No se pudo cargar el valor actual del portfolio. Intentá de nuevo.');
+      setError(
+        'No se pudo cargar el valor actual del portfolio. Intentá de nuevo.'
+      );
       setValue(null);
       setProfitLoss(null);
     } finally {

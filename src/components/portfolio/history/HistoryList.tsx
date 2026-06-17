@@ -7,18 +7,25 @@ import {
 } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { useTheme } from '@/hooks/use-theme';
-import { GroupedOperations } from '@/hooks/use-history';
+import type { Operation } from '@/actions/types';
 import { HistoryTransactionCard } from '@/components/portfolio/history/HistoryTransactionCard';
 import { styles } from '@/app/styles/history/HistoryListStyles';
 
 interface Props {
-  grouped: GroupedOperations[];
+  operations: Operation[];
   isLoading: boolean;
   error: string | null;
+  onEdit: (operation: Operation) => void;
   onRefresh: () => void;
 }
 
-export function HistoryList({ grouped, isLoading, error, onRefresh }: Props) {
+export function HistoryList({
+  operations,
+  isLoading,
+  error,
+  onEdit,
+  onRefresh,
+}: Props) {
   const theme = useTheme();
 
   if (isLoading) {
@@ -40,12 +47,15 @@ export function HistoryList({ grouped, isLoading, error, onRefresh }: Props) {
     );
   }
 
-  if (grouped.length === 0) {
+  if (operations.length === 0) {
     return (
-      <View style={styles.centered}>
+      <View testID="history-empty-state" style={styles.centered}>
         <ThemedText style={styles.emptyIcon}>📋</ThemedText>
+        <ThemedText className="text-lg font-semibold">
+          No transactions yet
+        </ThemedText>
         <ThemedText themeColor="textSecondary" style={styles.messageText}>
-          No hay transacciones que coincidan con los filtros seleccionados.
+          No transactions match the selected filters.
         </ThemedText>
       </View>
     );
@@ -53,6 +63,7 @@ export function HistoryList({ grouped, isLoading, error, onRefresh }: Props) {
 
   return (
     <ScrollView
+      testID="history-list"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollContent}
       refreshControl={
@@ -63,37 +74,14 @@ export function HistoryList({ grouped, isLoading, error, onRefresh }: Props) {
         />
       }
     >
-      {grouped.map((group) => (
-        <View key={group.status} style={styles.group}>
-          <View style={styles.sectionHeader}>
-            <ThemedText
-              style={[styles.sectionLabel, { color: theme.textSecondary }]}
-            >
-              {group.label}
-            </ThemedText>
-            <View
-              style={[
-                styles.sectionCount,
-                { backgroundColor: theme.backgroundElement },
-              ]}
-            >
-              <ThemedText
-                style={[
-                  styles.sectionCountText,
-                  { color: theme.textSecondary },
-                ]}
-              >
-                {group.data.length}
-              </ThemedText>
-            </View>
-          </View>
-
-          {group.data.map((op) => (
-            <HistoryTransactionCard key={op.id} operation={op} />
-          ))}
-        </View>
+      {operations.map((op) => (
+        <HistoryTransactionCard
+          key={op.id}
+          operation={op}
+          onEdit={onEdit}
+          onRefresh={onRefresh}
+        />
       ))}
     </ScrollView>
   );
 }
-

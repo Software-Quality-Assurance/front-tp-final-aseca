@@ -55,6 +55,7 @@ export default function CurrentValueScreenPage() {
                 totalValue={summary.totalValue}
                 totalPnL={summary.totalProfitLoss}
                 totalPnLPercentage={summary.totalProfitLossPercentage}
+                lastUpdatedAt={summary.lastUpdatedAt}
               />
 
               {positions.map((position) => (
@@ -65,6 +66,7 @@ export default function CurrentValueScreenPage() {
                   currentValue={position.currentValue}
                   profitLoss={position.profitLoss}
                   profitLossPercentage={position.profitLossPercentage}
+                  warning={position.warning}
                 />
               ))}
             </>

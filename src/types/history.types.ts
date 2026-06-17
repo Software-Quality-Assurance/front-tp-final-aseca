@@ -1,7 +1,5 @@
 export type TransactionType = 'BUY' | 'SELL';
 
-export type TransactionStatus = 'PENDING' | 'COMPLETED' | 'REJECTED';
-
 export interface OperationResponse {
   id: number;
   ticker: string;
@@ -14,4 +12,3 @@ export interface OperationResponse {
 }
 
 export type HistoryFilterType = 'ALL' | TransactionType;
-export type HistoryFilterStatus = 'ALL' | TransactionStatus;

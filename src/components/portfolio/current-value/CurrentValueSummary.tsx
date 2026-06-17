@@ -24,18 +24,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+
+  updatedAt: {
+    fontSize: 12,
+  },
 });
 
 type Props = ViewProps & {
   totalValue: number;
   totalPnL: number;
   totalPnLPercentage: number;
+  lastUpdatedAt: string | null;
 };
 
 export function CurrentValueSummary({
   totalValue,
   totalPnL,
   totalPnLPercentage,
+  lastUpdatedAt,
   ...props
 }: Props) {
   return (
@@ -55,6 +61,16 @@ export function CurrentValueSummary({
         {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)} (
         {totalPnLPercentage >= 0 ? '+' : ''}
         {totalPnLPercentage.toFixed(2)}%)
+      </ThemedText>
+
+      <ThemedText
+        testID="current-value-last-updated"
+        themeColor="textSecondary"
+        style={styles.updatedAt}
+      >
+        {lastUpdatedAt
+          ? `Last updated: ${new Date(lastUpdatedAt).toLocaleString()}`
+          : 'Last updated: no price data yet'}
       </ThemedText>
     </View>
   );

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from '@/hooks/use-history';
 import { HistoryFilterBar } from '@/components/portfolio/history/HistoryFilterBar';
 import { HistoryList } from '@/components/portfolio/history/HistoryList';
+import { EditHistoryModal } from '@/components/portfolio/history/EditHistoryModal';
+import type { Operation } from '@/actions/types';
 import {
   HistoryScreen,
   HistorySafeArea,
@@ -10,16 +12,16 @@ import {
 } from '@/app/styles/history.style';
 
 export default function HistoryScreenPage() {
-  const {
-    grouped,
-    isLoading,
-    error,
-    filterType,
-    filterStatus,
-    setFilterType,
-    setFilterStatus,
-    refresh,
-  } = useHistory();
+  const { operations, isLoading, error, filterType, setFilterType, refresh } =
+    useHistory();
+  const [editingOperation, setEditingOperation] = useState<Operation | null>(
+    null
+  );
+
+  function handleEditSuccess() {
+    setEditingOperation(null);
+    refresh();
+  }
 
   return (
     <HistoryScreen testID="history-screen">
@@ -30,18 +32,23 @@ export default function HistoryScreenPage() {
 
         <HistoryFilterBar
           filterType={filterType}
-          filterStatus={filterStatus}
           onTypeChange={setFilterType}
-          onStatusChange={setFilterStatus}
         />
 
         <HistoryList
-          grouped={grouped}
+          operations={operations}
           isLoading={isLoading}
           error={error}
+          onEdit={setEditingOperation}
           onRefresh={refresh}
         />
       </HistorySafeArea>
+
+      <EditHistoryModal
+        operation={editingOperation}
+        onClose={() => setEditingOperation(null)}
+        onSuccess={handleEditSuccess}
+      />
     </HistoryScreen>
   );
 }

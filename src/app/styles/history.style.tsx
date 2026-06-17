@@ -28,8 +28,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export function HistoryScreen({ children, ...props }: ViewProps & { children: React.ReactNode }) {
-  return <ThemedView style={styles.container} {...props}>{children}</ThemedView>;
+export function HistoryScreen({
+  children,
+  ...props
+}: ViewProps & { children: React.ReactNode }) {
+  return (
+    <ThemedView style={styles.container} {...props}>
+      {children}
+    </ThemedView>
+  );
 }
 
 export function HistorySafeArea({ children }: { children: React.ReactNode }) {

@@ -76,9 +76,11 @@ describe('Current Value — Feature 5', () => {
     cy.intercept('GET', endpoints.portfolio.value(), currentValueResponse).as(
       'getCurrentValue'
     );
-    cy.intercept('GET', endpoints.portfolio.profitLoss(), profitLossResponse).as(
-      'getCurrentValueProfitLoss'
-    );
+    cy.intercept(
+      'GET',
+      endpoints.portfolio.profitLoss(),
+      profitLossResponse
+    ).as('getCurrentValueProfitLoss');
   }
 
   function stubCurrentValueEmpty() {
@@ -154,9 +156,9 @@ describe('Current Value — Feature 5', () => {
     cy.wait('@getCurrentValue');
     cy.wait('@getCurrentValueProfitLoss');
 
-    cy.get('[data-testid="current-value-empty-state"]', { timeout: 10000 }).should(
-      'be.visible'
-    );
+    cy.get('[data-testid="current-value-empty-state"]', {
+      timeout: 10000,
+    }).should('be.visible');
     cy.contains('No positions yet').should('be.visible');
     cy.contains('Buy stocks to see your current value breakdown.').should(
       'be.visible'
@@ -168,9 +170,11 @@ describe('Current Value — Feature 5', () => {
       statusCode: 500,
       body: { message: 'error' },
     }).as('getCurrentValue');
-    cy.intercept('GET', endpoints.portfolio.profitLoss(), profitLossResponse).as(
-      'getCurrentValueProfitLoss'
-    );
+    cy.intercept(
+      'GET',
+      endpoints.portfolio.profitLoss(),
+      profitLossResponse
+    ).as('getCurrentValueProfitLoss');
 
     visitCurrentValue();
 

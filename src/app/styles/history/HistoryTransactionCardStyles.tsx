@@ -57,13 +57,21 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
   date: {
     fontSize: 11,
     textAlign: 'right',
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 6,
+  },
+  editButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#3b82f6',
   },
 });

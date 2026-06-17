@@ -8,11 +8,7 @@ interface TradeOptions {
   type: OperationType;
 }
 
-function executeTrade({
-  ticker,
-  quantity,
-  type,
-}: TradeOptions) {
+function executeTrade({ ticker, quantity, type }: TradeOptions) {
   const alias = type === 'BUY' ? 'buyOperation' : 'sellOperation';
 
   cy.intercept('POST', endpoints.portfolio.operations()).as(alias);
@@ -29,10 +25,9 @@ function executeTrade({
     force: true,
   });
 
-  cy.get('[data-testid="add-position-ticker-input"]').type(
-    ticker,
-    { force: true }
-  );
+  cy.get('[data-testid="add-position-ticker-input"]').type(ticker, {
+    force: true,
+  });
 
   cy.get('[data-testid="add-position-quantity-input"]').clear({
     force: true,
@@ -53,10 +48,7 @@ function executeTrade({
   }).should('not.exist');
 }
 
-export function buyPosition(
-  ticker: string,
-  quantity: number
-) {
+export function buyPosition(ticker: string, quantity: number) {
   executeTrade({
     ticker,
     quantity,
@@ -64,10 +56,7 @@ export function buyPosition(
   });
 }
 
-export function sellPosition(
-  ticker: string,
-  quantity: number
-) {
+export function sellPosition(ticker: string, quantity: number) {
   executeTrade({
     ticker,
     quantity,

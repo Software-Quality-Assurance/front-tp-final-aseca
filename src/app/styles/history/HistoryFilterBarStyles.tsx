@@ -20,19 +20,4 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
-  chipRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 24,
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  chipLabel: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
 });

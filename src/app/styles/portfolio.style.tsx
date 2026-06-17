@@ -52,8 +52,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export function PortfolioScreen({ children , ...props}: ViewProps & { children: React.ReactNode }) {
-  return <ThemedView style={styles.container} {...props}>{children}</ThemedView>;
+export function PortfolioScreen({
+  children,
+  ...props
+}: ViewProps & { children: React.ReactNode }) {
+  return (
+    <ThemedView style={styles.container} {...props}>
+      {children}
+    </ThemedView>
+  );
 }
 
 export function PortfolioSafeArea({ children }: { children: React.ReactNode }) {
