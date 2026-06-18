@@ -58,7 +58,7 @@ export function CurrentValueSummary({
           },
         ]}
       >
-        {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)} (
+        {totalPnL >= 0 ? '+' : '-'}${Math.abs(totalPnL).toFixed(2)} (
         {totalPnLPercentage >= 0 ? '+' : ''}
         {totalPnLPercentage.toFixed(2)}%)
       </ThemedText>

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
 import { usePortfolioActions } from '@/actions/portfolio';
 import { ThemedText } from '@/components/themed-text';
@@ -19,16 +20,22 @@ export function PositionList({ refreshTrigger = 0, onRefresh }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!user?.id) return;
-    setLoading(true);
-    setError(null);
-    getPortfolio()
-      .then(setPositions)
-      .catch((e: any) => setError(e.message ?? 'Failed to load portfolio'))
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, refreshTrigger]);
+  // Las pestañas de Expo Router mantienen las pantallas montadas al
+  // navegar entre ellas, así que un useEffect basado en mount no alcanza
+  // para reflejar cambios hechos desde otra pantalla (p. ej. editar el
+  // historial). useFocusEffect refetch cada vez que esta pantalla gana foco.
+  useFocusEffect(
+    useCallback(() => {
+      if (!user?.id) return;
+      setLoading(true);
+      setError(null);
+      getPortfolio()
+        .then(setPositions)
+        .catch((e: any) => setError(e.message ?? 'Failed to load portfolio'))
+        .finally(() => setLoading(false));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.id, refreshTrigger])
+  );
 
   if (loading) return <ActivityIndicator className="mt-8" size="large" />;
 

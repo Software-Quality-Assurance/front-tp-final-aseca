@@ -4,6 +4,17 @@ import {
   sellPosition,
 } from '../support/helpers/portfolio.helpers';
 
+// HistoryTransactionCard formatea montos con Intl.NumberFormat('es-AR', ...),
+// que produce "US$ 600,00" (con espacio de no separación), distinto del
+// formato "$600.00" usado en las pantallas de Portfolio/Current Value.
+function formatHistoryAmount(value: number): string {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format(value);
+}
+
 // Feature 4 — Operaciones e historial
 //
 // US 4.1, 4.2 y la mayoría de 4.3 corren contra el backend real (sin stubs):
@@ -324,14 +335,12 @@ describe('Feature 4 — Operaciones e historial', () => {
       freshFundedTicker(email, unitPrice).then((ticker) => {
         buyPosition(ticker, 6);
         cy.contains('History').click({ force: true });
-        cy.get(`[data-testid="history-item-${ticker}"]`)
+        cy.get(`[data-testid="history-item-${ticker}"]`, { timeout: 10000 })
           .first()
-          .within(() => {
-            cy.contains(ticker).should('be.visible');
-            cy.contains(`Isolated ${ticker}`).should('be.visible');
-            cy.contains('6').should('be.visible');
-            cy.contains(`$${(6 * unitPrice).toFixed(2)}`).should('be.visible');
-          });
+          .should('contain', ticker)
+          .and('contain', `Isolated ${ticker}`)
+          .and('contain', '6')
+          .and('contain', formatHistoryAmount(6 * unitPrice));
       });
     });
 
@@ -356,7 +365,7 @@ describe('Feature 4 — Operaciones e historial', () => {
         cy.contains('History').click({ force: true });
         cy.get(`[data-testid="history-item-${ticker}"]`)
           .first()
-          .should('contain', `$${(2 * unitPrice).toFixed(2)}`);
+          .should('contain', formatHistoryAmount(2 * unitPrice));
       });
     });
 
@@ -411,7 +420,7 @@ describe('Feature 4 — Operaciones e historial', () => {
           cy.get('[data-testid="edit-history-submit-button"]').click({
             force: true,
           });
-          cy.wait('@editOp');
+          cy.wait('@editOp').its('response.statusCode').should('eq', 200);
 
           cy.contains('Portfolio').click({ force: true });
           cy.get(`[data-testid="position-item-${ticker}"]`, {
@@ -570,16 +579,34 @@ describe('Feature 4 — Operaciones e historial', () => {
     });
 
     it('el valor actual = cantidad × último precio almacenado', () => {
-      buyPosition(testTicker, 3);
-      cy.contains('View Current Value').click({ force: true });
-      cy.get(`[data-testid="current-value-position-${testTicker}"]`, {
-        timeout: 10000,
-      }).should('contain', `$${(3 * unitPrice).toFixed(2)}`);
+      freshFundedTicker(valueEmail, unitPrice).then((ticker) => {
+        buyPosition(ticker, 3);
+        cy.contains('View Current Value').click({ force: true });
+        cy.get(`[data-testid="current-value-position-${ticker}"]`, {
+          timeout: 10000,
+        }).should('contain', `$${(3 * unitPrice).toFixed(2)}`);
+      });
     });
 
     it('con múltiples posiciones se suman los valores actuales de todas', () => {
-      freshFundedTicker(valueEmail, unitPrice).then((tickerA) => {
-        freshFundedTicker(valueEmail, 50).then((tickerB) => {
+      // El total de current-value-summary suma TODAS las posiciones del
+      // usuario, no solo las de este test — necesita un usuario propio,
+      // no alcanza con tickers aislados sobre valueEmail.
+      const sumEmail = `f4_value_sum_${uniqueId}@example.com`;
+      cy.request({
+        method: 'POST',
+        url: endpoints.auth.register(),
+        body: { email: sumEmail, password },
+        headers: { 'Content-Type': 'application/json' },
+        failOnStatusCode: false,
+      }).then((res) => expect(res.status).to.be.oneOf([201, 409]));
+
+      freshFundedTicker(sumEmail, unitPrice).then((tickerA) => {
+        freshFundedTicker(sumEmail, 50).then((tickerB) => {
+          cy.login(sumEmail, password, '/');
+          cy.get('[data-testid="portfolio-add-button"]', {
+            timeout: 10000,
+          }).should('be.visible');
           buyPosition(tickerA, 2);
           buyPosition(tickerB, 4);
           cy.contains('View Current Value').click({ force: true });
@@ -924,28 +951,47 @@ describe('Feature 4 — Operaciones e historial', () => {
     });
 
     it('datos insuficientes muestran advertencia en vez de un cálculo incorrecto', () => {
-      stub({
-        totalInvestedCost: 0,
-        totalCurrentValue: 0,
-        totalProfitLoss: 0,
-        totalReturnPercentage: 0,
-        positions: [
-          {
-            ticker: testTicker,
-            companyName: 'Feature4 Corp',
-            quantity: 5,
-            averageCost: null,
-            currentPrice: null,
-            priceSource: null,
-            investedCost: null,
-            currentValue: null,
-            profitLoss: null,
-            returnPercentage: null,
-            warning: `Insufficient data to calculate P&L for ${testTicker}`,
-          },
-        ],
-        warnings: [`Insufficient data to calculate P&L for ${testTicker}`],
-      });
+      stub(
+        {
+          totalInvestedCost: 0,
+          totalCurrentValue: 0,
+          totalProfitLoss: 0,
+          totalReturnPercentage: 0,
+          positions: [
+            {
+              ticker: testTicker,
+              companyName: 'Feature4 Corp',
+              quantity: 5,
+              averageCost: null,
+              currentPrice: null,
+              priceSource: null,
+              investedCost: null,
+              currentValue: null,
+              profitLoss: null,
+              returnPercentage: null,
+              warning: `Insufficient data to calculate P&L for ${testTicker}`,
+            },
+          ],
+          warnings: [`Insufficient data to calculate P&L for ${testTicker}`],
+        },
+        {
+          totalValue: 0,
+          lastUpdatedAt: null,
+          positions: [
+            {
+              ticker: testTicker,
+              companyName: 'Feature4 Corp',
+              quantity: 5,
+              currentPrice: null,
+              currentValue: null,
+              lastUpdatedAt: null,
+              priceSource: null,
+              warning: null,
+            },
+          ],
+          warnings: [],
+        }
+      );
       visitCurrentValue();
       cy.get(`[data-testid="current-value-warning-${testTicker}"]`).should(
         'contain',
@@ -954,41 +1000,70 @@ describe('Feature 4 — Operaciones e historial', () => {
     });
 
     it('con varias posiciones se devuelve la ganancia/pérdida total agregada', () => {
-      stub({
-        totalInvestedCost: 1500,
-        totalCurrentValue: 1800,
-        totalProfitLoss: 300,
-        totalReturnPercentage: 20,
-        positions: [
-          {
-            ticker: testTicker,
-            companyName: 'Feature4 Corp',
-            quantity: 10,
-            averageCost: 100,
-            currentPrice: 130,
-            priceSource: 'YAHOO_FINANCE',
-            investedCost: 1000,
-            currentValue: 1300,
-            profitLoss: 300,
-            returnPercentage: 30,
-            warning: null,
-          },
-          {
-            ticker: testTicker2,
-            companyName: 'Feature4 Second Corp',
-            quantity: 10,
-            averageCost: 50,
-            currentPrice: 50,
-            priceSource: 'YAHOO_FINANCE',
-            investedCost: 500,
-            currentValue: 500,
-            profitLoss: 0,
-            returnPercentage: 0,
-            warning: null,
-          },
-        ],
-        warnings: [],
-      });
+      stub(
+        {
+          totalInvestedCost: 1500,
+          totalCurrentValue: 1800,
+          totalProfitLoss: 300,
+          totalReturnPercentage: 20,
+          positions: [
+            {
+              ticker: testTicker,
+              companyName: 'Feature4 Corp',
+              quantity: 10,
+              averageCost: 100,
+              currentPrice: 130,
+              priceSource: 'YAHOO_FINANCE',
+              investedCost: 1000,
+              currentValue: 1300,
+              profitLoss: 300,
+              returnPercentage: 30,
+              warning: null,
+            },
+            {
+              ticker: testTicker2,
+              companyName: 'Feature4 Second Corp',
+              quantity: 10,
+              averageCost: 50,
+              currentPrice: 50,
+              priceSource: 'YAHOO_FINANCE',
+              investedCost: 500,
+              currentValue: 500,
+              profitLoss: 0,
+              returnPercentage: 0,
+              warning: null,
+            },
+          ],
+          warnings: [],
+        },
+        {
+          totalValue: 1800,
+          lastUpdatedAt: '2026-01-01T00:00:00Z',
+          positions: [
+            {
+              ticker: testTicker,
+              companyName: 'Feature4 Corp',
+              quantity: 10,
+              currentPrice: 130,
+              currentValue: 1300,
+              lastUpdatedAt: '2026-01-01T00:00:00Z',
+              priceSource: 'YAHOO_FINANCE',
+              warning: null,
+            },
+            {
+              ticker: testTicker2,
+              companyName: 'Feature4 Second Corp',
+              quantity: 10,
+              currentPrice: 50,
+              currentValue: 500,
+              lastUpdatedAt: '2026-01-01T00:00:00Z',
+              priceSource: 'YAHOO_FINANCE',
+              warning: null,
+            },
+          ],
+          warnings: [],
+        }
+      );
       visitCurrentValue();
       cy.get('[data-testid="current-value-summary"]').should(
         'contain',

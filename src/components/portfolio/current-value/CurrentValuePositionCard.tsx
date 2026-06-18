@@ -85,7 +85,7 @@ export function CurrentValuePositionCard({
           },
         ]}
       >
-        {profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)} (
+        {profitLoss >= 0 ? '+' : '-'}${Math.abs(profitLoss).toFixed(2)} (
         {profitLossPercentage >= 0 ? '+' : ''}
         {profitLossPercentage.toFixed(2)}%)
       </ThemedText>
