@@ -46,3 +46,7 @@ app-example
 # IDEs
 .idea
 .vscode
+
+# cypress artifacts
+cypress/screenshots
+cypress/videos
