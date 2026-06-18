@@ -35,7 +35,6 @@ export function useHistory(): UseHistoryReturn {
   useFocusEffect(
     useCallback(() => {
       refresh();
-       
     }, [refresh])
   );
 
