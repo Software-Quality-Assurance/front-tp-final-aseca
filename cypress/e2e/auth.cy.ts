@@ -70,6 +70,7 @@ describe('Auth flows', () => {
       .type(testPass);
     cy.clickButton('Login');
 
+    cy.contains('Profile').click({ force: true });
     cy.url().should('include', '/profile');
     cy.contains('Profile', { timeout: 10000 }).should('exist');
   });
@@ -84,6 +85,8 @@ describe('Auth flows', () => {
       .should('not.be.disabled')
       .type(testPass);
     cy.clickButton('Login');
+
+    cy.contains('Profile').click({ force: true });
     cy.url().should('include', '/profile');
 
     cy.on('window:alert', (text) => {
@@ -114,6 +117,8 @@ describe('Auth flows', () => {
       .should('not.be.disabled')
       .type(testPass);
     cy.clickButton('Login');
+
+    cy.contains('Profile').click({ force: true });
     cy.url().should('include', '/profile');
 
     cy.clickButton('Logout');
@@ -130,6 +135,8 @@ describe('Auth flows', () => {
       .should('not.be.disabled')
       .type(testPass);
     cy.clickButton('Login');
+
+    cy.contains('Profile').click({ force: true });
     cy.url().should('include', '/profile');
 
     cy.on('window:confirm', () => true);

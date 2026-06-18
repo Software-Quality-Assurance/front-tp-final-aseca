@@ -16,9 +16,11 @@ const inputStyles = StyleSheet.create({
 
 export function AuthInput({ style, ...props }: TextInputProps) {
   const theme = useTheme();
+  const accessibilityLabel = props.accessibilityLabel ?? props.testID;
 
   return (
     <TextInput
+      accessibilityLabel={accessibilityLabel}
       placeholderTextColor={theme.textSecondary}
       style={[
         inputStyles.base,

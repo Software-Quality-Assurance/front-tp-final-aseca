@@ -46,3 +46,6 @@ app-example
 # IDEs
 .idea
 .vscode
+/.g/
+/.gradle-appium/
+/.gradle-codex/

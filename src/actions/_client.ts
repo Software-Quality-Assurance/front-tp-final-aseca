@@ -17,9 +17,16 @@ export function useClient() {
       const response = await authorizedFetch(buildUrl(path), mergedOptions);
       if (!response.ok) {
         const text = await response.text();
+        let message = text || `Request failed with status ${response.status}`;
+        try {
+          const body = JSON.parse(text);
+          message = body.message ?? body.error ?? message;
+        } catch {
+          // Keep plain-text backend errors as-is.
+        }
         throw {
           status: response.status,
-          message: text || `Request failed with status ${response.status}`,
+          message,
         };
       }
       if (response.status === 204) return undefined as T;
