@@ -1,11 +1,13 @@
 import { browser, $ } from '@wdio/globals';
 
-// Selector por testID — en React Native se mapea a content-desc en Android
-export const el = (testId: string) => $(`~${testId}`);
+// Selector por testID — con la New Architecture (Fabric) el testID se expone
+// como resource-id en Android, no como content-desc
+export const el = (testId: string) =>
+  $(`android=new UiSelector().resourceId("${testId}")`);
 
 // Endpoints centralizados (mismo patrón que Cypress)
 const apiUrl = () =>
-  (browser as any).config.env?.apiUrl ?? 'http://localhost:8080';
+  (browser as any).options.env?.apiUrl ?? 'http://localhost:8080';
 
 export const endpoints = {
   auth: {

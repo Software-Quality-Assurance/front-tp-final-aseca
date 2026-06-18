@@ -21,7 +21,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace('/profile');
+      router.replace('/');
     }
   }, [authLoading, user, router]);
 
@@ -30,7 +30,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(email.trim().toLowerCase(), password);
-      router.replace('/profile');
+      router.replace('/');
     } catch (e: any) {
       setError(e.message ?? 'Login failed');
     } finally {

@@ -11,7 +11,7 @@ const API_URL = process.env.APPIUM_API_URL ?? 'http://localhost:8080';
 
 export const config = {
   runner: 'local' as const,
-  specs: ['./appium/tests/**/*.test.ts'],
+  specs: ['./tests/**/*.test.ts'],
   maxInstances: 1,
 
   capabilities: [
