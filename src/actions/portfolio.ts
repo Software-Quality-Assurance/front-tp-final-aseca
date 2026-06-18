@@ -1,5 +1,6 @@
 import { useClient } from './_client';
 import { useAuth } from '@/hooks/useAuth';
+import { normalizeTicker } from '@/lib/ticker';
 import type {
   CreateOperationPayload,
   Operation,
@@ -24,11 +25,17 @@ export function usePortfolioActions() {
       return [];
     },
 
-    createOperation: (payload: CreateOperationPayload): Promise<Operation> =>
-      apiRequest('/api/portfolio/operations', {
+    createOperation: (payload: CreateOperationPayload): Promise<Operation> => {
+      const sanitizedPayload = {
+        ...payload,
+        ticker: normalizeTicker(payload.ticker),
+      };
+
+      return apiRequest('/api/portfolio/operations', {
         method: 'POST',
-        body: JSON.stringify(payload),
-      }),
+        body: JSON.stringify(sanitizedPayload),
+      });
+    },
 
     getPortfolioHistory: (): Promise<Operation[]> =>
       apiRequest('/api/portfolio/history'),

@@ -46,3 +46,11 @@ app-example
 # IDEs
 .idea
 .vscode
+/.g/
+/.gradle-appium/
+/.gradle-codex/
+
+
+# cypress artifacts
+cypress/screenshots
+cypress/videos

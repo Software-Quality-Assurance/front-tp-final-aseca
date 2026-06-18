@@ -16,6 +16,23 @@ describe('Watchlist — Feature 6', () => {
     }).then((res) => {
       expect(res.status).to.be.oneOf([201, 409]);
     });
+
+    cy.getAuthToken(email, password).then((token) => {
+      cy.request({
+        method: 'POST',
+        url: endpoints.company.base(),
+        body: {
+          ticker: testTicker,
+          companyName: 'Apple Inc.',
+          price: 150.0,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        failOnStatusCode: false,
+      });
+    });
   });
 
   beforeEach(() => {

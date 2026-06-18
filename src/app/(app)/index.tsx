@@ -24,7 +24,7 @@ export default function PortfolioScreenPage() {
   }
 
   return (
-    <PortfolioScreen>
+    <PortfolioScreen testID="portfolio-screen">
       <PortfolioSafeArea>
         <PortfolioHeader>
           <PortfolioTitle>Portfolio</PortfolioTitle>

@@ -14,6 +14,7 @@ export function PositionItem({ position, onRefresh }: Props) {
   return (
     <ThemedView
       testID={`position-item-${position.ticker}`}
+      accessibilityLabel={`position-item-${position.ticker}`}
       type="backgroundElement"
       className="rounded-xl p-4 mb-3 flex-row items-center justify-between"
     >
