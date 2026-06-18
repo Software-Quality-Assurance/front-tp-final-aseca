@@ -47,9 +47,7 @@ export default function RegisterPage() {
     <RegisterScreen testID="register-screen">
       <RegisterTitle>Register</RegisterTitle>
       {error ? (
-        <RegisterError testID="register-error-message">
-          {error}
-        </RegisterError>
+        <RegisterError testID="register-error-message">{error}</RegisterError>
       ) : null}
       {success ? (
         <RegisterSuccess testID="register-success-message">

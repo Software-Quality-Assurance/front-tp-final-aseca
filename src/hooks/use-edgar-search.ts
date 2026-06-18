@@ -13,7 +13,7 @@ export function useEdgarSearch() {
         setResults([]);
         return;
       }
-      
+
       setLoading(true);
       setError(null);
       try {

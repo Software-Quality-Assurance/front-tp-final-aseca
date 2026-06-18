@@ -1,6 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import { FinancialMetricsResponse, FinancialMetricValue } from '@/actions/edgar';
+import {
+  FinancialMetricsResponse,
+  FinancialMetricValue,
+} from '@/actions/edgar';
 import { ThemedText } from '../themed-text';
 import { PartialDataBadge } from './PartialDataBadge';
 
@@ -19,21 +22,33 @@ export function CompanyMetricsCard({ metrics }: Props) {
         <ThemedText className="font-bold text-lg">Financial Metrics</ThemedText>
         <PartialDataBadge partial={metrics.partial} />
       </View>
-      
+
       <View className="gap-3">
         <MetricRow label="Revenue" data={metrics.revenue} isMoney />
         <MetricRow label="Net Income" data={metrics.netIncome} isMoney />
         <MetricRow label="EPS" data={metrics.eps} isMoney />
         <MetricRow label="Total Assets" data={metrics.totalAssets} isMoney />
-        <MetricRow label="Total Liabilities" data={metrics.totalLiabilities} isMoney />
+        <MetricRow
+          label="Total Liabilities"
+          data={metrics.totalLiabilities}
+          isMoney
+        />
       </View>
     </View>
   );
 }
 
-function MetricRow({ label, data, isMoney }: { label: string; data: FinancialMetricValue; isMoney?: boolean }) {
+function MetricRow({
+  label,
+  data,
+  isMoney,
+}: {
+  label: string;
+  data: FinancialMetricValue;
+  isMoney?: boolean;
+}) {
   const hasValue = data.value !== null && data.value !== undefined;
-  
+
   let formattedValue = 'N/A';
   if (hasValue) {
     // format large numbers
@@ -53,9 +68,13 @@ function MetricRow({ label, data, isMoney }: { label: string; data: FinancialMet
       testID={`metric-row-${label.replace(/\s+/g, '-').toLowerCase()}`}
       accessibilityLabel={`metric-row-${label.replace(/\s+/g, '-').toLowerCase()}`}
     >
-      <ThemedText className="font-medium text-sm text-gray-700 dark:text-gray-300">{label}</ThemedText>
+      <ThemedText className="font-medium text-sm text-gray-700 dark:text-gray-300">
+        {label}
+      </ThemedText>
       <View className="items-end">
-        <ThemedText className={`font-semibold text-sm ${!hasValue ? 'text-gray-400' : ''}`}>
+        <ThemedText
+          className={`font-semibold text-sm ${!hasValue ? 'text-gray-400' : ''}`}
+        >
           {formattedValue}
         </ThemedText>
         {data.reportDate && (

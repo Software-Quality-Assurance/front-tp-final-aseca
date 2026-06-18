@@ -31,14 +31,16 @@ export default function WatchlistScreenPage() {
         <WatchlistHeader>
           <WatchlistTitle>Watchlist</WatchlistTitle>
           <View className="flex-row flex-1 justify-end gap-3">
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setComparisonVisible(true)}
               className="bg-blue-100 dark:bg-blue-900/40 p-2 rounded-full flex-row items-center"
               testID="compare-button"
               accessibilityLabel="compare-button"
             >
               <Ionicons name="bar-chart" size={16} color={theme.text} />
-              <ThemedText className="ml-1 text-xs font-bold" themeColor="text">Compare</ThemedText>
+              <ThemedText className="ml-1 text-xs font-bold" themeColor="text">
+                Compare
+              </ThemedText>
             </TouchableOpacity>
             <AddWatchlistButton onPress={() => setModalVisible(true)} />
           </View>
@@ -51,7 +53,7 @@ export default function WatchlistScreenPage() {
         onClose={() => setModalVisible(false)}
         onSuccess={handleSuccess}
       />
-      
+
       <ComparisonModal
         visible={comparisonVisible}
         onClose={() => setComparisonVisible(false)}

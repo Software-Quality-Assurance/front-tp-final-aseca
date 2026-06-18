@@ -35,7 +35,9 @@ export function CompanySearchResults({ results, onSelect, loading }: Props) {
           }`}
         >
           <View>
-            <ThemedText className="font-bold text-base">{company.ticker}</ThemedText>
+            <ThemedText className="font-bold text-base">
+              {company.ticker}
+            </ThemedText>
             <ThemedText className="text-sm" themeColor="textSecondary">
               {company.name}
             </ThemedText>

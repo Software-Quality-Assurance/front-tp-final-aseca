@@ -114,7 +114,10 @@ export async function waitForVisible(id: string, timeout = DEFAULT_TIMEOUT) {
   }
 }
 
-export async function waitForAny(ids: readonly string[], timeout = DEFAULT_TIMEOUT) {
+export async function waitForAny(
+  ids: readonly string[],
+  timeout = DEFAULT_TIMEOUT
+) {
   const deadline = Date.now() + timeout;
 
   while (Date.now() < deadline) {

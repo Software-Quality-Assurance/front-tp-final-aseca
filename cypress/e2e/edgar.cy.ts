@@ -35,7 +35,9 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
 
   beforeEach(() => {
     cy.login(email, password, '/explore');
-    cy.get('[data-testid="explore-screen"]', { timeout: 10000 }).should('be.visible');
+    cy.get('[data-testid="explore-screen"]', { timeout: 10000 }).should(
+      'be.visible'
+    );
   });
 
   // US 6.3 - Búsqueda de empresas
@@ -44,7 +46,9 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
     cy.get('[data-testid="company-search-button"]').click();
 
     cy.get('[data-testid="company-search-results"]').should('be.visible');
-    cy.get(`[data-testid="search-result-${testTicker}"]`).should('be.visible').click();
+    cy.get(`[data-testid="search-result-${testTicker}"]`)
+      .should('be.visible')
+      .click();
 
     // Should open detail view
     cy.contains(`${testTicker} Analysis`).should('be.visible');
@@ -73,7 +77,9 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
       cy.get('[data-testid="metric-row-net-income"]').should('be.visible');
       cy.get('[data-testid="metric-row-eps"]').should('be.visible');
       cy.get('[data-testid="metric-row-total-assets"]').should('be.visible');
-      cy.get('[data-testid="metric-row-total-liabilities"]').should('be.visible');
+      cy.get('[data-testid="metric-row-total-liabilities"]').should(
+        'be.visible'
+      );
     });
 
     // Check History chart
@@ -89,7 +95,7 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
   it('6.5 — manejar ticker no encontrado (404)', () => {
     cy.intercept('GET', `**/api/edgar/companies/${testTicker}/metrics`, {
       statusCode: 404,
-      body: 'Company with ticker AAPL not found'
+      body: 'Company with ticker AAPL not found',
     }).as('getMetricsError');
 
     cy.get('[data-testid="company-search-input"]').type(testTicker);
@@ -114,14 +120,19 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
 
     // Visit Watchlist Screen
     cy.visit('/watchlist');
-    cy.get('[data-testid="watchlist-screen"]', { timeout: 10000 }).should('be.visible');
+    cy.get('[data-testid="watchlist-screen"]', { timeout: 10000 }).should(
+      'be.visible'
+    );
 
     // Click compare
     cy.get('[data-testid="compare-button"]').click();
     cy.get('[data-testid="comparison-modal-content"]').should('be.visible');
 
     // Single company warning should be visible
-    cy.get('[data-testid="comparison-warning"]').should('contain', 'At least two companies');
+    cy.get('[data-testid="comparison-warning"]').should(
+      'contain',
+      'At least two companies'
+    );
 
     // Table should render AAPL
     cy.get('[data-testid="comparison-table"]').should('be.visible');

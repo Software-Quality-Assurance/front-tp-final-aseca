@@ -9,7 +9,11 @@ type Props = {
   loading: boolean;
 };
 
-export function CompanySearchBar({ initialQuery = '', onSearch, loading }: Props) {
+export function CompanySearchBar({
+  initialQuery = '',
+  onSearch,
+  loading,
+}: Props) {
   const [query, setQuery] = useState(initialQuery);
   const theme = useTheme();
 

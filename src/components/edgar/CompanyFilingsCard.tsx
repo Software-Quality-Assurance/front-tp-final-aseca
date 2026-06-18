@@ -10,24 +10,32 @@ type Props = {
 export function CompanyFilingsCard({ data }: Props) {
   if (data.filings.length === 0) {
     return (
-      <View className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-4" testID="company-filings-empty">
-         <ThemedText className="font-bold text-lg mb-2">Recent Filings</ThemedText>
-         <ThemedText themeColor="textSecondary" className="text-sm">
-           {data.message || 'No recent 10-K or 10-Q filings found.'}
-         </ThemedText>
+      <View
+        className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-4"
+        testID="company-filings-empty"
+      >
+        <ThemedText className="font-bold text-lg mb-2">
+          Recent Filings
+        </ThemedText>
+        <ThemedText themeColor="textSecondary" className="text-sm">
+          {data.message || 'No recent 10-K or 10-Q filings found.'}
+        </ThemedText>
       </View>
     );
   }
 
   return (
-    <View className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-4" testID="company-filings-card">
+    <View
+      className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-4"
+      testID="company-filings-card"
+    >
       <ThemedText className="font-bold text-lg mb-3 border-b border-gray-200 dark:border-gray-800 pb-2">
         Recent Filings
       </ThemedText>
-      
+
       <View className="gap-2">
         {data.filings.map((filing) => (
-          <TouchableOpacity 
+          <TouchableOpacity
             key={filing.accessionNumber}
             onPress={() => Linking.openURL(filing.documentUrl)}
             className="flex-row justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700"

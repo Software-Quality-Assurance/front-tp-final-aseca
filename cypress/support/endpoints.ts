@@ -22,9 +22,12 @@ export const endpoints = {
   },
   edgar: {
     search: () => `${api()}/api/edgar/search`,
-    metrics: (ticker: string) => `${api()}/api/edgar/companies/${ticker}/metrics`,
-    filings: (ticker: string) => `${api()}/api/edgar/companies/${ticker}/filings`,
-    history: (ticker: string) => `${api()}/api/edgar/companies/${ticker}/history`,
+    metrics: (ticker: string) =>
+      `${api()}/api/edgar/companies/${ticker}/metrics`,
+    filings: (ticker: string) =>
+      `${api()}/api/edgar/companies/${ticker}/filings`,
+    history: (ticker: string) =>
+      `${api()}/api/edgar/companies/${ticker}/history`,
     comparison: () => `${api()}/api/edgar/comparison`,
   },
 };

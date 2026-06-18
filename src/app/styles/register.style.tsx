@@ -50,7 +50,11 @@ type MessageProps = {
 
 export function RegisterError({ children, testID }: MessageProps) {
   return (
-    <ThemedText style={styles.error} testID={testID} accessibilityLabel={testID}>
+    <ThemedText
+      style={styles.error}
+      testID={testID}
+      accessibilityLabel={testID}
+    >
       {children}
     </ThemedText>
   );

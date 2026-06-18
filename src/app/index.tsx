@@ -9,4 +9,3 @@ export default function RootIndex() {
 
   return <Redirect href={user ? '/(app)' : '/login'} />;
 }
-

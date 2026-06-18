@@ -1,7 +1,6 @@
 import {
   createAuthenticatedSession,
   openTab,
-  searchCompany,
   waitForVisible,
 } from '../helpers';
 
