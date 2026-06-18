@@ -22,19 +22,16 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingBottom: 16,
   },
-
   screenTitle: {
     fontSize: 36,
     fontWeight: '700',
     letterSpacing: -0.5,
   },
-
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 16,
+    paddingTop: 8,
   },
-
   centeredContent: {
     flex: 1,
     alignItems: 'center',
@@ -44,10 +41,17 @@ const styles = StyleSheet.create({
 
 export function CurrentValueScreen({
   children,
-  ...props
-}: ViewProps & { children: React.ReactNode }) {
+  testID,
+}: {
+  children: React.ReactNode;
+  testID?: string;
+}) {
   return (
-    <ThemedView style={styles.container} {...props}>
+    <ThemedView
+      style={styles.container}
+      testID={testID || 'current-value-screen'}
+      accessibilityLabel={testID || 'current-value-screen'}
+    >
       {children}
     </ThemedView>
   );
@@ -85,17 +89,31 @@ export function CurrentValueContent({
 }: {
   children: React.ReactNode;
 }) {
-  return <View style={styles.content}>{children}</View>;
+  return (
+    <View
+      style={styles.content}
+      testID="current-value-content"
+      accessibilityLabel="current-value-content"
+    >
+      {children}
+    </View>
+  );
 }
 
 export function CurrentValueCenteredContent({
   children,
+  testID,
   ...props
 }: ViewProps & {
   children: React.ReactNode;
 }) {
   return (
-    <View style={styles.centeredContent} {...props}>
+    <View
+      style={styles.centeredContent}
+      testID={testID || 'current-value-content'}
+      accessibilityLabel={testID || 'current-value-content'}
+      {...props}
+    >
       {children}
     </View>
   );

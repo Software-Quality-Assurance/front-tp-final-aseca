@@ -31,7 +31,11 @@ type ScreenProps = {
 
 export function WatchlistScreen({ children, testID }: ScreenProps) {
   return (
-    <ThemedView style={styles.container} testID={testID}>
+    <ThemedView
+      style={styles.container}
+      testID={testID}
+      accessibilityLabel={testID}
+    >
       {children}
     </ThemedView>
   );

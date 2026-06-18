@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { usePortfolioActions } from '@/actions/portfolio';
 import { HistoryFilterType } from '@/types/history.types';
 import type { Operation } from '@/actions/types';
@@ -20,22 +21,23 @@ export function useHistory(): UseHistoryReturn {
   const [error, setError] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<HistoryFilterType>('ALL');
 
-  const load = useCallback(async () => {
+  const refresh = useCallback(() => {
     setIsLoading(true);
     setError(null);
-    try {
-      const data = await getPortfolioHistory();
-      setRaw(data);
-    } catch {
-      setError('No se pudo cargar el historial. Intentá de nuevo.');
-    } finally {
-      setIsLoading(false);
-    }
+    getPortfolioHistory()
+      .then(setRaw)
+      .catch(() =>
+        setError('No se pudo cargar el historial. Intentá de nuevo.')
+      )
+      .finally(() => setIsLoading(false));
   }, [getPortfolioHistory]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+       
+    }, [refresh])
+  );
 
   const operations = useMemo(
     () => raw.filter((op) => filterType === 'ALL' || op.type === filterType),
@@ -48,6 +50,6 @@ export function useHistory(): UseHistoryReturn {
     error,
     filterType,
     setFilterType,
-    refresh: load,
+    refresh,
   };
 }

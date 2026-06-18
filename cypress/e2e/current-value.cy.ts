@@ -8,29 +8,37 @@ describe('Current Value — Feature 5', () => {
   const currentValueResponse = {
     totalValue: 125430,
     lastUpdatedAt: '2026-06-16T10:00:00.000Z',
+    warnings: [],
     positions: [
       {
         ticker: 'AAPL',
-        company: 'Apple Inc.',
+        companyName: 'Apple Inc.',
         quantity: 10,
         currentPrice: 3500,
         currentValue: 35000,
-        priceUpdatedAt: '2026-06-16T10:00:00.000Z',
+        lastUpdatedAt: '2026-06-16T10:00:00.000Z',
+        priceSource: null,
+        warning: null,
       },
       {
         ticker: 'TSLA',
-        company: 'Tesla, Inc.',
+        companyName: 'Tesla, Inc.',
         quantity: 5,
         currentPrice: 3700,
         currentValue: 18500,
-        priceUpdatedAt: '2026-06-16T10:00:00.000Z',
+        lastUpdatedAt: '2026-06-16T10:00:00.000Z',
+        priceSource: null,
+        warning: null,
       },
     ],
   };
 
   const profitLossResponse = {
     totalProfitLoss: 8430,
-    totalProfitLossPercentage: 7.2,
+    totalReturnPercentage: 7.2,
+    totalInvestedCost: 0,
+    totalCurrentValue: 0,
+    warnings: [],
     positions: [
       {
         ticker: 'AAPL',
@@ -38,8 +46,12 @@ describe('Current Value — Feature 5', () => {
         quantity: 10,
         averageCost: 3270,
         currentPrice: 3500,
+        investedCost: null,
+        currentValue: null,
+        priceSource: null,
         profitLoss: 2300,
-        profitLossPercentage: 6.97,
+        returnPercentage: 6.97,
+        warning: null,
       },
       {
         ticker: 'TSLA',
@@ -47,8 +59,12 @@ describe('Current Value — Feature 5', () => {
         quantity: 5,
         averageCost: 3800,
         currentPrice: 3700,
+        investedCost: null,
+        currentValue: null,
+        priceSource: null,
         profitLoss: -500,
-        profitLossPercentage: -2.63,
+        returnPercentage: -2.63,
+        warning: null,
       },
     ],
   };
@@ -87,26 +103,28 @@ describe('Current Value — Feature 5', () => {
     cy.intercept('GET', endpoints.portfolio.value(), {
       totalValue: 0,
       lastUpdatedAt: '2026-06-16T10:00:00.000Z',
+      warnings: [],
       positions: [],
     }).as('getCurrentValue');
     cy.intercept('GET', endpoints.portfolio.profitLoss(), {
       totalProfitLoss: 0,
-      totalProfitLossPercentage: 0,
+      totalReturnPercentage: 0,
+      totalInvestedCost: 0,
+      totalCurrentValue: 0,
+      warnings: [],
       positions: [],
     }).as('getCurrentValueProfitLoss');
   }
 
   it('5.4 — muestra loading mientras carga el valor actual', () => {
     cy.intercept('GET', endpoints.portfolio.value(), (req) => {
-      req.reply((res) => {
+      req.on('response', (res) => {
         res.delay = 500;
-        res.send(currentValueResponse);
       });
     }).as('getCurrentValue');
     cy.intercept('GET', endpoints.portfolio.profitLoss(), (req) => {
-      req.reply((res) => {
+      req.on('response', (res) => {
         res.delay = 500;
-        res.send(profitLossResponse);
       });
     }).as('getCurrentValueProfitLoss');
 

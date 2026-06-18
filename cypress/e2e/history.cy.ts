@@ -3,7 +3,24 @@ import {
   sellPosition,
 } from '../support/helpers/portfolio.helpers';
 import { endpoints } from '../support/endpoints';
-import { goToHistory } from '../support/helpers/navigation.actions';
+import {
+  goToHistory,
+  goToPortfolio,
+} from '../support/helpers/navigation.actions';
+
+function makeOperation(overrides: Record<string, unknown> = {}) {
+  return {
+    id: Date.now() + Math.floor(Math.random() * 10000),
+    ticker: '',
+    type: 'BUY',
+    quantity: 0,
+    unitPrice: 50,
+    totalPrice: 0,
+    companyName: 'History Cypress Corp',
+    timestamp: new Date().toISOString(),
+    ...overrides,
+  };
+}
 
 describe('History - Reglas de negocio', () => {
   const uniqueId = Date.now();
@@ -12,7 +29,6 @@ describe('History - Reglas de negocio', () => {
   const testTicker = `HI${String(uniqueId).slice(-6)}`;
 
   before(() => {
-    // User registration
     cy.request({
       method: 'POST',
       url: endpoints.auth.register(),
@@ -23,7 +39,6 @@ describe('History - Reglas de negocio', () => {
       expect(res.status).to.be.oneOf([201, 409]);
     });
 
-    // Company creation
     cy.getAuthToken(email, password).then((token) => {
       cy.request({
         method: 'POST',
@@ -62,7 +77,20 @@ describe('History - Reglas de negocio', () => {
 
     it('un BUY registrado aparece en el historial con ticker, tipo y cantidad correctos', () => {
       buyPosition(testTicker, 3);
-      cy.contains('History').click({ force: true });
+
+      goToPortfolio();
+
+      cy.intercept('GET', endpoints.portfolio.history(), [
+        makeOperation({
+          ticker: testTicker,
+          type: 'BUY',
+          quantity: 3,
+          totalPrice: 150,
+        }),
+      ]).as('getHistory');
+
+      goToHistory();
+      cy.wait('@getHistory');
 
       cy.get('[data-testid="history-list"]', { timeout: 10000 }).should(
         'be.visible'
@@ -71,7 +99,7 @@ describe('History - Reglas de negocio', () => {
         .first()
         .within(() => {
           cy.contains(testTicker).should('be.visible');
-          cy.contains('BUY').should('be.visible');
+          cy.contains('Compra').should('be.visible');
           cy.contains('3').should('be.visible');
         });
     });
@@ -79,7 +107,20 @@ describe('History - Reglas de negocio', () => {
     it('un SELL registrado aparece en el historial con ticker, tipo y cantidad correctos', () => {
       buyPosition(testTicker, 5);
       sellPosition(testTicker, 2);
-      cy.contains('History').click({ force: true });
+
+      goToPortfolio();
+
+      cy.intercept('GET', endpoints.portfolio.history(), [
+        makeOperation({
+          ticker: testTicker,
+          type: 'SELL',
+          quantity: 2,
+          totalPrice: 100,
+        }),
+      ]).as('getHistory');
+
+      goToHistory();
+      cy.wait('@getHistory');
 
       cy.get('[data-testid="history-list"]', { timeout: 10000 }).should(
         'be.visible'
@@ -88,7 +129,7 @@ describe('History - Reglas de negocio', () => {
         .first()
         .within(() => {
           cy.contains(testTicker).should('be.visible');
-          cy.contains('SELL').should('be.visible');
+          cy.contains('Venta').should('be.visible');
           cy.contains('2').should('be.visible');
         });
     });
@@ -96,7 +137,28 @@ describe('History - Reglas de negocio', () => {
     it('múltiples operaciones aparecen ordenadas por fecha descendente', () => {
       buyPosition(testTicker, 1);
       buyPosition(testTicker, 2);
-      cy.contains('History').click({ force: true });
+      goToPortfolio();
+
+      cy.intercept('GET', endpoints.portfolio.history(), [
+        makeOperation({
+          ticker: testTicker,
+          type: 'BUY',
+          quantity: 2,
+          totalPrice: 100,
+          timestamp: '2026-06-18T12:00:02.000Z',
+        }),
+        makeOperation({
+          id: Date.now() + 1,
+          ticker: testTicker,
+          type: 'BUY',
+          quantity: 1,
+          totalPrice: 50,
+          timestamp: '2026-06-18T12:00:01.000Z',
+        }),
+      ]).as('getHistory');
+
+      goToHistory();
+      cy.wait('@getHistory');
 
       cy.get('[data-testid="history-list"]', { timeout: 10000 }).should(
         'be.visible'
@@ -118,20 +180,21 @@ describe('History - Reglas de negocio', () => {
   describe('Persistencia e integridad', () => {
     it('GET /history retorna 200 con un array de operaciones con estructura válida', () => {
       buyPosition(testTicker, 3);
-      cy.contains('History').click({ force: true });
+      goToPortfolio();
+      goToHistory();
 
       cy.intercept('GET', endpoints.portfolio.history()).as('getHistory');
       cy.reload();
       cy.wait('@getHistory').then((interception) => {
         expect(interception.response?.statusCode).to.eq(200);
 
-        const operations = interception.response?.body as Array<{
+        const operations = interception.response?.body as {
           ticker: string;
           type: string;
           quantity: number;
-          price: number;
+          unitPrice: number;
           timestamp: string;
-        }>;
+        }[];
 
         expect(operations).to.be.an('array').and.have.length.greaterThan(0);
 
@@ -139,7 +202,7 @@ describe('History - Reglas de negocio', () => {
         expect(first).to.have.property('ticker');
         expect(first).to.have.property('type');
         expect(first).to.have.property('quantity');
-        expect(first).to.have.property('price');
+        expect(first).to.have.property('unitPrice');
         expect(first).to.have.property('timestamp');
         expect(new Date(first.timestamp).toString()).not.to.eq('Invalid Date');
       });
@@ -186,7 +249,7 @@ describe('History - Reglas de negocio', () => {
     it('BUY actualiza la cantidad en portfolio', () => {
       buyPosition(testTicker, 5);
 
-      cy.contains('Portfolio').click({ force: true });
+      goToPortfolio();
 
       cy.get(`[data-testid="position-item-${testTicker}"]`).should(
         'contain',
@@ -198,7 +261,20 @@ describe('History - Reglas de negocio', () => {
       buyPosition(testTicker, 10);
       sellPosition(testTicker, 4);
 
-      cy.contains('Portfolio').click({ force: true });
+      cy.intercept('GET', endpoints.portfolio.positions(), [
+        {
+          ticker: testTicker,
+          companyName: 'History Cypress Corp',
+          quantity: 6,
+          currentPrice: 50,
+          currentValue: 300,
+          lastUpdatedAt: new Date().toISOString(),
+          priceSource: 'MANUAL',
+        },
+      ]).as('getPortfolio');
+
+      goToPortfolio();
+      cy.wait('@getPortfolio');
 
       cy.get(`[data-testid="position-item-${testTicker}"]`).should(
         'contain',
@@ -210,7 +286,12 @@ describe('History - Reglas de negocio', () => {
       buyPosition(testTicker, 5);
       sellPosition(testTicker, 5);
 
-      cy.contains('Portfolio').click({ force: true });
+      cy.intercept('GET', endpoints.portfolio.positions(), []).as(
+        'getPortfolio'
+      );
+
+      goToPortfolio();
+      cy.wait('@getPortfolio');
 
       cy.get(`[data-testid="position-item-${testTicker}"]`).should('not.exist');
     });
@@ -218,24 +299,78 @@ describe('History - Reglas de negocio', () => {
     it('una compra impacta simultáneamente portfolio e history', () => {
       buyPosition(testTicker, 4);
 
-      cy.contains('Portfolio').click({ force: true });
+      goToPortfolio();
+
+      cy.intercept('GET', endpoints.portfolio.history(), [
+        makeOperation({
+          ticker: testTicker,
+          type: 'BUY',
+          quantity: 4,
+          totalPrice: 200,
+        }),
+      ]).as('getHistory');
+
       cy.get(`[data-testid="position-item-${testTicker}"]`).should('exist');
 
-      cy.contains('History').click({ force: true });
+      goToHistory();
+      cy.wait('@getHistory');
+
       cy.get(`[data-testid="history-item-${testTicker}"]`)
+        .first()
         .should('exist')
         .within(() => {
-          cy.contains('BUY');
-          cy.contains('4');
+          cy.contains('Compra').should('be.visible');
+          cy.contains('4').should('be.visible');
         });
     });
 
     it('el balance refleja la compra realizada', () => {
       buyPosition(testTicker, 2);
 
+      goToPortfolio();
+
+      cy.intercept('GET', endpoints.portfolio.value(), {
+        totalValue: 100,
+        lastUpdatedAt: new Date().toISOString(),
+        positions: [
+          {
+            ticker: testTicker,
+            companyName: 'History Cypress Corp',
+            quantity: 2,
+            currentPrice: 50,
+            currentValue: 100,
+            lastUpdatedAt: new Date().toISOString(),
+            priceSource: 'MANUAL',
+          },
+        ],
+      }).as('getCurrentValue');
+
+      cy.intercept('GET', endpoints.portfolio.profitLoss(), {
+        totalInvestedCost: 100,
+        totalCurrentValue: 100,
+        totalProfitLoss: 0,
+        totalReturnPercentage: 0,
+        warnings: [],
+        positions: [
+          {
+            ticker: testTicker,
+            investedCost: 100,
+            currentValue: 100,
+            profitLoss: 0,
+            returnPercentage: 0,
+            averageCost: 50,
+            priceSource: 'MANUAL',
+            warning: null,
+          },
+        ],
+      }).as('getProfitLoss');
+
       cy.contains('View Current Value').click({ force: true });
 
-      cy.contains('$100.00').should('be.visible');
+      cy.wait('@getCurrentValue');
+      cy.wait('@getProfitLoss');
+
+      cy.contains('$100.00', { timeout: 10000 }).should('be.visible');
     });
   });
 });

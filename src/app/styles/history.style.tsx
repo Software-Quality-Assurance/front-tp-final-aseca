@@ -21,6 +21,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: -0.5,
   },
+  content: {
+    flex: 1,
+  },
   centeredContent: {
     flex: 1,
     alignItems: 'center',
@@ -30,10 +33,17 @@ const styles = StyleSheet.create({
 
 export function HistoryScreen({
   children,
-  ...props
-}: ViewProps & { children: React.ReactNode }) {
+  testID,
+}: {
+  children: React.ReactNode;
+  testID?: string;
+}) {
   return (
-    <ThemedView style={styles.container} {...props}>
+    <ThemedView
+      style={styles.container}
+      testID={testID || 'history-screen'}
+      accessibilityLabel={testID || 'history-screen'}
+    >
       {children}
     </ThemedView>
   );
@@ -62,10 +72,30 @@ export function HistoryTitle({ children }: { children: string }) {
   return <ThemedText style={styles.screenTitle}>{children}</ThemedText>;
 }
 
+export function HistoryContent({ children }: { children: React.ReactNode }) {
+  return (
+    <View
+      style={styles.content}
+      testID="history-content"
+      accessibilityLabel="history-content"
+    >
+      {children}
+    </View>
+  );
+}
+
 export function HistoryCenteredContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <View style={styles.centeredContent}>{children}</View>;
+  return (
+    <View
+      style={styles.centeredContent}
+      testID="history-content"
+      accessibilityLabel="history-content"
+    >
+      {children}
+    </View>
+  );
 }

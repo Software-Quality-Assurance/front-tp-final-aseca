@@ -19,7 +19,11 @@ type ScreenProps = {
 
 export function ProfileScreen({ children, testID }: ScreenProps) {
   return (
-    <ThemedView testID={testID} style={styles.container}>
+    <ThemedView
+      testID={testID}
+      accessibilityLabel={testID}
+      style={styles.container}
+    >
       {children}
     </ThemedView>
   );

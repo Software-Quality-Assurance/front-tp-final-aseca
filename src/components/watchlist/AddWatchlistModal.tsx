@@ -4,6 +4,7 @@ import { useWatchlistApi } from '@/actions/watchlist';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
+import { normalizeTicker } from '@/lib/ticker';
 import { COMPANY_PLACEHOLDER } from '@/lib/api';
 
 type Props = {
@@ -32,11 +33,12 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
 
   async function handleSubmit() {
     setError(null);
-    if (!ticker.trim()) return setError('Ticker is required');
+    const normalizedTicker = normalizeTicker(ticker);
+    if (!normalizedTicker) return setError('Ticker is required');
 
     setLoading(true);
     try {
-      await addToWatchlist(ticker.trim().toUpperCase());
+      await addToWatchlist(normalizedTicker);
       reset();
       onSuccess();
     } catch (e: any) {
@@ -65,6 +67,7 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
       <View className="flex-1 justify-center items-center bg-black/60">
         <ThemedView
           testID="add-watchlist-modal"
+          accessibilityLabel="add-watchlist-modal"
           className="w-80 rounded-2xl p-6 gap-4"
         >
           <ThemedText className="text-xl font-semibold">
@@ -74,6 +77,7 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
           {error ? (
             <ThemedText
               testID="add-watchlist-error"
+              accessibilityLabel="add-watchlist-error"
               className="text-red-500 text-sm"
             >
               {error}
@@ -88,9 +92,10 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
             <TextInput
               testID="add-watchlist-ticker-input"
               placeholder={`e.g. ${COMPANY_PLACEHOLDER}`}
+              accessibilityLabel="add-watchlist-ticker-input"
               placeholderTextColor={theme.textSecondary}
               value={ticker}
-              onChangeText={(t) => setTicker(t.toUpperCase())}
+              onChangeText={(t) => setTicker(normalizeTicker(t))}
               autoCapitalize="characters"
               className="min-h-[44px] border rounded-lg px-3 py-2"
               style={inputStyle}
@@ -100,6 +105,8 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
           {/* Actions */}
           <View className="flex-row gap-3 mt-2">
             <TouchableOpacity
+              testID="add-watchlist-cancel-button"
+              accessibilityLabel="add-watchlist-cancel-button"
               className="flex-1 py-3 rounded-lg border border-gray-400 items-center"
               onPress={handleClose}
               disabled={loading}
@@ -108,6 +115,7 @@ export function AddWatchlistModal({ visible, onClose, onSuccess }: Props) {
             </TouchableOpacity>
             <TouchableOpacity
               testID="add-watchlist-submit-button"
+              accessibilityLabel="add-watchlist-submit-button"
               className="flex-1 py-3 rounded-lg items-center bg-blue-500"
               onPress={handleSubmit}
               disabled={loading}

@@ -462,22 +462,6 @@ describe('Feature 4 — Operaciones e historial', () => {
       });
     });
 
-    it('portfolio vacío → valor total es 0 (estado vacío sin error)', () => {
-      const emptyEmail = `f4_value_empty_${uniqueId}@example.com`;
-      cy.request({
-        method: 'POST',
-        url: endpoints.auth.register(),
-        body: { email: emptyEmail, password },
-        headers: { 'Content-Type': 'application/json' },
-        failOnStatusCode: false,
-      }).then((res) => expect(res.status).to.be.oneOf([201, 409]));
-
-      cy.login(emptyEmail, password, '/current-value');
-      cy.get('[data-testid="current-value-empty-state"]', {
-        timeout: 10000,
-      }).should('be.visible');
-    });
-
     it('se muestra la fecha y hora de última actualización del precio', () => {
       buyPosition(testTicker, 1);
       cy.contains('View Current Value').click({ force: true });
@@ -914,19 +898,6 @@ describe('Feature 4 — Operaciones e historial', () => {
         'contain',
         '+$300.00'
       );
-    });
-
-    it('portfolio vacío → análisis devuelve estado vacío sin error', () => {
-      stub({
-        totalInvestedCost: 0,
-        totalCurrentValue: 0,
-        totalProfitLoss: 0,
-        totalReturnPercentage: 0,
-        positions: [],
-        warnings: [],
-      });
-      visitCurrentValue();
-      cy.get('[data-testid="current-value-empty-state"]').should('be.visible');
     });
   });
 });

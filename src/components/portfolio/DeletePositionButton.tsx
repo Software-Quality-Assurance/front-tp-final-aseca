@@ -36,6 +36,7 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
     <>
       <TouchableOpacity
         testID={`delete-position-button-${ticker}`}
+        accessibilityLabel={`delete-position-button-${ticker}`}
         className="px-3 py-1.5 rounded-lg border border-red-500"
         onPress={() => setVisible(true)}
       >
@@ -49,7 +50,11 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
         onRequestClose={() => setVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/60">
-          <ThemedView className="w-72 rounded-2xl p-6 gap-4">
+          <ThemedView
+            testID="delete-position-modal"
+            accessibilityLabel="delete-position-modal"
+            className="w-72 rounded-2xl p-6 gap-4"
+          >
             <ThemedText className="text-xl font-semibold">
               Sell All Shares
             </ThemedText>
@@ -69,6 +74,7 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
             <View className="flex-row gap-3 mt-2">
               <TouchableOpacity
                 testID="delete-position-cancel-button"
+                accessibilityLabel="delete-position-cancel-button"
                 className="flex-1 py-3 rounded-lg border border-gray-400 items-center"
                 onPress={() => {
                   setVisible(false);
@@ -80,6 +86,7 @@ export function DeletePositionButton({ ticker, quantity, onSuccess }: Props) {
               </TouchableOpacity>
               <TouchableOpacity
                 testID="delete-position-confirm-button"
+                accessibilityLabel="delete-position-confirm-button"
                 className="flex-1 py-3 rounded-lg bg-red-500 items-center"
                 onPress={handleConfirm}
                 disabled={loading}

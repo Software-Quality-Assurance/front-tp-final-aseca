@@ -9,6 +9,7 @@ import {
   HistorySafeArea,
   HistoryHeader,
   HistoryTitle,
+  HistoryContent,
 } from '@/app/styles/history.style';
 
 export default function HistoryScreenPage() {
@@ -35,13 +36,15 @@ export default function HistoryScreenPage() {
           onTypeChange={setFilterType}
         />
 
-        <HistoryList
-          operations={operations}
-          isLoading={isLoading}
-          error={error}
-          onEdit={setEditingOperation}
-          onRefresh={refresh}
-        />
+        <HistoryContent>
+          <HistoryList
+            operations={operations}
+            isLoading={isLoading}
+            error={error}
+            onEdit={setEditingOperation}
+            onRefresh={refresh}
+          />
+        </HistoryContent>
       </HistorySafeArea>
 
       <EditHistoryModal
