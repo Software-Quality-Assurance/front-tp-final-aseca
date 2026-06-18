@@ -1,0 +1,77 @@
+import React from 'react';
+import { StyleSheet, View, type ViewProps } from 'react-native';
+import { ThemedText } from '@/components/themed-text';
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 24,
+    gap: 8,
+  },
+
+  label: {
+    fontSize: 14,
+  },
+
+  value: {
+    fontSize: 32,
+    fontWeight: '700',
+  },
+
+  profit: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  updatedAt: {
+    fontSize: 12,
+  },
+});
+
+type Props = ViewProps & {
+  totalValue: number;
+  totalPnL: number;
+  totalPnLPercentage: number;
+  lastUpdatedAt: string | null;
+};
+
+export function CurrentValueSummary({
+  totalValue,
+  totalPnL,
+  totalPnLPercentage,
+  lastUpdatedAt,
+  ...props
+}: Props) {
+  return (
+    <View testID="current-value-summary" style={styles.container} {...props}>
+      <ThemedText themeColor="textSecondary">Portfolio Value</ThemedText>
+
+      <ThemedText style={styles.value}>${totalValue.toFixed(2)}</ThemedText>
+
+      <ThemedText
+        style={[
+          styles.profit,
+          {
+            color: totalPnL >= 0 ? '#16a34a' : '#dc2626',
+          },
+        ]}
+      >
+        {totalPnL >= 0 ? '+' : '-'}${Math.abs(totalPnL).toFixed(2)} (
+        {totalPnLPercentage >= 0 ? '+' : ''}
+        {totalPnLPercentage.toFixed(2)}%)
+      </ThemedText>
+
+      <ThemedText
+        testID="current-value-last-updated"
+        themeColor="textSecondary"
+        style={styles.updatedAt}
+      >
+        {lastUpdatedAt
+          ? `Last updated: ${new Date(lastUpdatedAt).toLocaleString()}`
+          : 'Last updated: no price data yet'}
+      </ThemedText>
+    </View>
+  );
+}

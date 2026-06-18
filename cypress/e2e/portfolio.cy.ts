@@ -362,12 +362,6 @@ describe('Portfolio — Feature 5', () => {
     cy.contains('Current Value').should('be.visible');
   });
 
-  it('5.3 — navega a History desde la barra lateral', () => {
-    cy.contains('History').click({ force: true });
-    cy.url().should('include', '/history');
-    cy.contains('Coming soon').should('be.visible');
-  });
-
   it('5.3 — navega a Watchlist desde la barra lateral', () => {
     cy.contains('Watchlist').click({ force: true });
     cy.url().should('include', '/watchlist');
@@ -386,14 +380,6 @@ describe('Portfolio — Feature 5', () => {
   });
 
   it('5.3 — portfolio vacío navega a secciones sin errores', () => {
-    cy.contains('View Current Value').click({ force: true });
-    cy.url().should('include', '/current-value');
-    cy.contains('Coming soon').should('be.visible');
-
-    cy.contains('History').click({ force: true });
-    cy.url().should('include', '/history');
-    cy.contains('Coming soon').should('be.visible');
-
     cy.contains('Watchlist').click({ force: true });
     cy.url().should('include', '/watchlist');
     cy.get('[data-testid="watchlist-screen"]', { timeout: 10000 }).should(

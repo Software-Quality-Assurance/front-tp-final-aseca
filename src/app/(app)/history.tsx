@@ -1,24 +1,57 @@
-import React from 'react';
-import { ThemedText } from '@/components/themed-text';
+import React, { useState } from 'react';
+import { useHistory } from '@/hooks/use-history';
+import { HistoryFilterBar } from '@/components/portfolio/history/HistoryFilterBar';
+import { HistoryList } from '@/components/portfolio/history/HistoryList';
+import { EditHistoryModal } from '@/components/portfolio/history/EditHistoryModal';
+import type { Operation } from '@/actions/types';
 import {
   HistoryScreen,
   HistorySafeArea,
   HistoryHeader,
   HistoryTitle,
-  HistoryCenteredContent,
+  HistoryContent,
 } from '@/app/styles/history.style';
 
 export default function HistoryScreenPage() {
+  const { operations, isLoading, error, filterType, setFilterType, refresh } =
+    useHistory();
+  const [editingOperation, setEditingOperation] = useState<Operation | null>(
+    null
+  );
+
+  function handleEditSuccess() {
+    setEditingOperation(null);
+    refresh();
+  }
+
   return (
-    <HistoryScreen>
+    <HistoryScreen testID="history-screen">
       <HistorySafeArea>
         <HistoryHeader>
           <HistoryTitle>History</HistoryTitle>
         </HistoryHeader>
-        <HistoryCenteredContent>
-          <ThemedText themeColor="textSecondary">Coming soon</ThemedText>
-        </HistoryCenteredContent>
+
+        <HistoryFilterBar
+          filterType={filterType}
+          onTypeChange={setFilterType}
+        />
+
+        <HistoryContent>
+          <HistoryList
+            operations={operations}
+            isLoading={isLoading}
+            error={error}
+            onEdit={setEditingOperation}
+            onRefresh={refresh}
+          />
+        </HistoryContent>
       </HistorySafeArea>
+
+      <EditHistoryModal
+        operation={editingOperation}
+        onClose={() => setEditingOperation(null)}
+        onSuccess={handleEditSuccess}
+      />
     </HistoryScreen>
   );
 }

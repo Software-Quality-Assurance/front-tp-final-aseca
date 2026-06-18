@@ -52,12 +52,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export function PortfolioScreen({ children }: { children: React.ReactNode }) {
+export function PortfolioScreen({
+  children,
+  testID,
+}: {
+  children: React.ReactNode;
+  testID?: string;
+}) {
   return (
     <ThemedView
       style={styles.container}
-      testID="portfolio-screen"
-      accessibilityLabel="portfolio-screen"
+      testID={testID || 'portfolio-screen'}
+      accessibilityLabel={testID || 'portfolio-screen'}
     >
       {children}
     </ThemedView>

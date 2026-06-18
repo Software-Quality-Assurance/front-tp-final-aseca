@@ -60,31 +60,41 @@ export type PatchOperationPayload = {
 
 export type PositionValue = {
   ticker: string;
-  company: string;
+  companyName: string;
   quantity: number;
-  currentPrice: number;
-  currentValue: number;
-  priceUpdatedAt: string;
+  currentPrice: number | null;
+  currentValue: number | null;
+  lastUpdatedAt: string | null;
+  priceSource: string | null;
+  warning: string | null;
 };
 
 export type PortfolioValue = {
   totalValue: number;
-  lastUpdatedAt: string;
+  lastUpdatedAt: string | null;
   positions: PositionValue[];
+  warnings: string[];
 };
 
 export type PositionProfitLoss = {
   ticker: string;
-  company: string;
+  companyName: string;
   quantity: number;
-  averageCost: number;
-  currentPrice: number;
-  profitLoss: number;
-  profitLossPercentage: number;
+  averageCost: number | null;
+  currentPrice: number | null;
+  priceSource: string | null;
+  investedCost: number | null;
+  currentValue: number | null;
+  profitLoss: number | null;
+  returnPercentage: number | null;
+  warning: string | null;
 };
 
 export type PortfolioProfitLoss = {
+  totalInvestedCost: number;
+  totalCurrentValue: number;
   totalProfitLoss: number;
-  totalProfitLossPercentage: number;
+  totalReturnPercentage: number;
   positions: PositionProfitLoss[];
+  warnings: string[];
 };
