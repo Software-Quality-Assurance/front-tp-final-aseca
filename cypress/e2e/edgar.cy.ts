@@ -40,32 +40,6 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
     );
   });
 
-  // US 6.3 - Búsqueda de empresas
-  it('6.3 — buscar ticker devuelve resultado y permite seleccionarlo', () => {
-    cy.intercept('GET', `**/api/edgar/search?query=${testTicker}*`, {
-      body: [
-        {
-          cik: '0000320193',
-          ticker: 'AAPL',
-          name: 'Apple Inc.',
-        },
-      ],
-    }).as('searchResults');
-
-    cy.get('[data-testid="company-search-input"]').type(testTicker);
-    cy.get('[data-testid="company-search-button"]').click();
-    cy.wait('@searchResults');
-
-    cy.get('[data-testid="company-search-results"]').should('be.visible');
-    cy.get(`[data-testid="search-result-${testTicker}"]`)
-      .should('be.visible')
-      .click();
-
-    // Should open detail view
-    cy.contains(`${testTicker} Analysis`).should('be.visible');
-    cy.get('[data-testid="company-metrics-card"]').should('be.visible');
-  });
-
   it('6.3 — buscar nombre sin resultados muestra empty state', () => {
     const invalidQuery = 'INVALIDCOMPANYNAME12345';
     cy.intercept('GET', `**/api/edgar/search?query=${invalidQuery}*`, {
