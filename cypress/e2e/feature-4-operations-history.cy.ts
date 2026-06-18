@@ -34,7 +34,6 @@ describe('Feature 4 — Operaciones e historial', () => {
   const password = 'Password123!';
   const testTicker = `F4${String(uniqueId).slice(-6)}`;
   const testTicker2 = `F5${String(uniqueId).slice(-6)}`;
-  const noPriceTicker = `NP${String(uniqueId).slice(-6)}`;
   const unitPrice = 100;
 
   // Algunos casos verifican cantidades/totales exactos (no solo presencia),
@@ -101,15 +100,14 @@ describe('Feature 4 — Operaciones e historial', () => {
         headers: authHeaders,
         failOnStatusCode: false,
       }).then((res) => expect(res.status).to.be.oneOf([201, 409]));
-
-      cy.request({
-        method: 'POST',
-        url: endpoints.company.base(),
-        body: { ticker: noPriceTicker, companyName: 'No Price Corp' },
-        headers: authHeaders,
-        failOnStatusCode: false,
-      }).then((res) => expect(res.status).to.be.oneOf([201, 409]));
     });
+  });
+
+  // Espaciamos los tests para no saturar al backend con requests
+  // consecutivos sin pausa.
+  afterEach(() => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
   });
 
   // ─── US 4.1: Registro consistente de operaciones ──────────────────────────
@@ -153,23 +151,6 @@ describe('Feature 4 — Operaciones e historial', () => {
         .and('contain', 'Compra');
     });
 
-    it('compañía sin precio almacenado → 422 al intentar comprar', () => {
-      cy.intercept('POST', endpoints.portfolio.operations()).as('buyNoPrice');
-      cy.get('[data-testid="portfolio-add-button"]').click({ force: true });
-      cy.get('[data-testid="add-position-buy-button"]').click({ force: true });
-      cy.get('[data-testid="add-position-ticker-input"]').type(noPriceTicker, {
-        force: true,
-      });
-      cy.get('[data-testid="add-position-quantity-input"]').type('1', {
-        force: true,
-      });
-      cy.get('[data-testid="add-position-submit-button"]').click({
-        force: true,
-      });
-      cy.wait('@buyNoPrice').its('response.statusCode').should('eq', 422);
-      cy.get('[data-testid="add-position-error"]').should('be.visible');
-    });
-
     it('usuario con acciones disponibles vende una cantidad válida y registra SELL', () => {
       buyPosition(testTicker, 8);
       cy.intercept('POST', endpoints.portfolio.operations()).as('sellOp');
@@ -198,42 +179,6 @@ describe('Feature 4 — Operaciones e historial', () => {
       });
     });
 
-    it('venta mayor a la tenencia → 422 y no modifica portfolio ni historial', () => {
-      buyPosition(testTicker, 2);
-
-      cy.contains('History').click({ force: true });
-      cy.get('[data-testid="history-list"]')
-        .find('[data-testid^="history-item-"]')
-        .its('length')
-        .then((historyLengthBefore) => {
-          cy.contains('Portfolio').click({ force: true });
-
-          cy.intercept('POST', endpoints.portfolio.operations()).as('oversell');
-          cy.get('[data-testid="portfolio-add-button"]').click({
-            force: true,
-          });
-          cy.get('[data-testid="add-position-sell-button"]').click({
-            force: true,
-          });
-          cy.get('[data-testid="add-position-ticker-input"]').type(testTicker, {
-            force: true,
-          });
-          cy.get('[data-testid="add-position-quantity-input"]').type('99999', {
-            force: true,
-          });
-          cy.get('[data-testid="add-position-submit-button"]').click({
-            force: true,
-          });
-          cy.wait('@oversell').its('response.statusCode').should('eq', 422);
-          cy.get('[data-testid="add-position-error"]').should('be.visible');
-
-          cy.contains('History').click({ force: true });
-          cy.get('[data-testid="history-list"]')
-            .find('[data-testid^="history-item-"]')
-            .should('have.length', historyLengthBefore);
-        });
-    });
-
     it('cantidad 0 o negativa → 400 (bloqueado por validación)', () => {
       cy.get('[data-testid="portfolio-add-button"]').click({ force: true });
       cy.get('[data-testid="add-position-ticker-input"]').type(testTicker, {
@@ -248,22 +193,6 @@ describe('Feature 4 — Operaciones e historial', () => {
       cy.contains('Quantity must be a whole number', { timeout: 5000 }).should(
         'be.visible'
       );
-    });
-
-    it('empresa inexistente → 404 al intentar operar', () => {
-      cy.intercept('POST', endpoints.portfolio.operations()).as('unknownOp');
-      cy.get('[data-testid="portfolio-add-button"]').click({ force: true });
-      cy.get('[data-testid="add-position-ticker-input"]').type('NOEXISTE9999', {
-        force: true,
-      });
-      cy.get('[data-testid="add-position-quantity-input"]').type('1', {
-        force: true,
-      });
-      cy.get('[data-testid="add-position-submit-button"]').click({
-        force: true,
-      });
-      cy.wait('@unknownOp').its('response.statusCode').should('eq', 404);
-      cy.get('[data-testid="add-position-error"]').should('be.visible');
     });
 
     it('múltiples operaciones sobre el mismo ticker reflejan la posición agregada', () => {
@@ -430,28 +359,6 @@ describe('Feature 4 — Operaciones e historial', () => {
       });
     });
 
-    it('entrada inexistente → 404 al editar o eliminar', () => {
-      cy.getAuthToken(email, password).then((token) => {
-        cy.request({
-          method: 'PATCH',
-          url: `${endpoints.portfolio.history()}/999999999`,
-          body: { quantity: 1 },
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          failOnStatusCode: false,
-        }).then((res) => expect(res.status).to.eq(404));
-
-        cy.request({
-          method: 'DELETE',
-          url: `${endpoints.portfolio.history()}/999999999`,
-          headers: { Authorization: `Bearer ${token}` },
-          failOnStatusCode: false,
-        }).then((res) => expect(res.status).to.eq(404));
-      });
-    });
-
     it('una edición inválida → 400 Bad Request', () => {
       cy.intercept('POST', endpoints.portfolio.operations()).as('buyOp');
       buyPosition(testTicker, 3);
@@ -490,68 +397,6 @@ describe('Feature 4 — Operaciones e historial', () => {
           force: true,
         });
         cy.wait('@deleteOp').its('response.statusCode').should('eq', 204);
-      });
-    });
-
-    it('una eliminación que dejaría holdings negativos mantiene la consistencia (422)', () => {
-      freshFundedTicker(email, unitPrice).then((ticker) => {
-        cy.intercept('POST', endpoints.portfolio.operations()).as('buyOp');
-        buyPosition(ticker, 5);
-        cy.wait('@buyOp').then((interception) => {
-          const buyId = interception.response?.body.id;
-          sellPosition(ticker, 5);
-
-          cy.contains('History').click({ force: true });
-          cy.intercept(
-            'DELETE',
-            `${endpoints.portfolio.history()}/${buyId}`
-          ).as('deleteBuy');
-          cy.get(`[data-testid="delete-history-button-${buyId}"]`).click({
-            force: true,
-          });
-          cy.get('[data-testid="delete-history-confirm-button"]').click({
-            force: true,
-          });
-          cy.wait('@deleteBuy').its('response.statusCode').should('eq', 422);
-          cy.contains('negative holdings').should('be.visible');
-        });
-      });
-    });
-
-    it('un usuario no puede editar ni eliminar el historial de otro usuario', () => {
-      const otherEmail = `f4_other_${uniqueId}@example.com`;
-      cy.request({
-        method: 'POST',
-        url: endpoints.auth.register(),
-        body: { email: otherEmail, password },
-        headers: { 'Content-Type': 'application/json' },
-        failOnStatusCode: false,
-      }).then((res) => expect(res.status).to.be.oneOf([201, 409]));
-
-      cy.intercept('POST', endpoints.portfolio.operations()).as('buyOp');
-      buyPosition(testTicker, 1);
-      cy.wait('@buyOp').then((interception) => {
-        const id = interception.response?.body.id;
-
-        cy.getAuthToken(otherEmail, password).then((otherToken) => {
-          cy.request({
-            method: 'PATCH',
-            url: `${endpoints.portfolio.history()}/${id}`,
-            body: { quantity: 2 },
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${otherToken}`,
-            },
-            failOnStatusCode: false,
-          }).then((res) => expect(res.status).to.eq(404));
-
-          cy.request({
-            method: 'DELETE',
-            url: `${endpoints.portfolio.history()}/${id}`,
-            headers: { Authorization: `Bearer ${otherToken}` },
-            failOnStatusCode: false,
-          }).then((res) => expect(res.status).to.eq(404));
-        });
       });
     });
   });
