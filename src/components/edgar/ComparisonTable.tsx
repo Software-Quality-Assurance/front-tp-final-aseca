@@ -81,10 +81,18 @@ export function ComparisonTable({ companies }: Props) {
                         : metric.key === 'TOTAL_ASSETS'
                           ? 'totalAssets'
                           : 'totalLiabilities';
-
-                const data = c.metrics[metricKey];
+                const data =
+                  metric.key === 'REVENUE'
+                    ? c.metrics.revenue
+                    : metric.key === 'NET_INCOME'
+                      ? c.metrics.netIncome
+                      : metric.key === 'EPS'
+                        ? c.metrics.eps
+                        : metric.key === 'TOTAL_ASSETS'
+                          ? c.metrics.totalAssets
+                          : c.metrics.totalLiabilities;
                 const hasValue =
-                  data && data.value !== null && data.value !== undefined;
+                  data.value !== null && data.value !== undefined;
                 const isBest = c.bestMetrics.includes(metric.key);
 
                 let formattedValue = 'N/A';

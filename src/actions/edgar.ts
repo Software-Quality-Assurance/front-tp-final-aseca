@@ -1,5 +1,6 @@
 import { useClient } from './_client';
 import { normalizeTicker } from '@/lib/ticker';
+import { useMemo } from 'react';
 
 export type FinancialMetric =
   | 'REVENUE'
@@ -82,26 +83,29 @@ export interface FinancialComparisonResponse {
 export function useEdgarApi() {
   const apiRequest = useClient();
 
-  return {
-    search: (query: string): Promise<EdgarCompanyResponse[]> =>
-      apiRequest(`/api/edgar/search?query=${encodeURIComponent(query)}`),
+  return useMemo(
+    () => ({
+      search: (query: string): Promise<EdgarCompanyResponse[]> =>
+        apiRequest(`/api/edgar/search?query=${encodeURIComponent(query)}`),
 
-    metrics: (ticker: string): Promise<FinancialMetricsResponse> =>
-      apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/metrics`),
+      metrics: (ticker: string): Promise<FinancialMetricsResponse> =>
+        apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/metrics`),
 
-    filings: (ticker: string): Promise<FilingsResponse> =>
-      apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/filings`),
+      filings: (ticker: string): Promise<FilingsResponse> =>
+        apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/filings`),
 
-    history: (
-      ticker: string,
-      metric: FinancialMetric,
-      quarters: number = 8
-    ): Promise<FinancialHistoryResponse> =>
-      apiRequest(
-        `/api/edgar/companies/${normalizeTicker(ticker)}/history?metric=${metric}&quarters=${quarters}`
-      ),
+      history: (
+        ticker: string,
+        metric: FinancialMetric,
+        quarters: number = 8
+      ): Promise<FinancialHistoryResponse> =>
+        apiRequest(
+          `/api/edgar/companies/${normalizeTicker(ticker)}/history?metric=${metric}&quarters=${quarters}`
+        ),
 
-    comparison: (): Promise<FinancialComparisonResponse> =>
-      apiRequest(`/api/edgar/comparison`),
-  };
+      comparison: (): Promise<FinancialComparisonResponse> =>
+        apiRequest(`/api/edgar/comparison`),
+    }),
+    [apiRequest]
+  );
 }

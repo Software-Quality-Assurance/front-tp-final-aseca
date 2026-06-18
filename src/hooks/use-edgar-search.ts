@@ -11,6 +11,8 @@ export function useEdgarSearch() {
     async (query: string) => {
       if (!query.trim()) {
         setResults([]);
+        setError(null);
+        setLoading(false);
         return;
       }
 

@@ -7,10 +7,12 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 export PATH=$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
 
 # Run the Appium logic script
-if [ ! -f "./run-appium-logic.sh" ]; then
-    echo "Error: run-appium-logic.sh not found."
+SCRIPT_DIR="${0:A:h}"
+LOGIC_SCRIPT="$SCRIPT_DIR/run-appium-logic.sh"
+if [ ! -f "$LOGIC_SCRIPT" ]; then
+    echo "Error: run-appium-logic.sh not found at $LOGIC_SCRIPT."
     exit 1
 fi
 
-chmod +x "./run-appium-logic.sh"
-./run-appium-logic.sh
+chmod +x "$LOGIC_SCRIPT"
+ "$LOGIC_SCRIPT"
