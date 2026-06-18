@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useEdgarApi, FinancialComparisonResponse } from '@/actions/edgar';
 
 export function useEdgarComparison() {

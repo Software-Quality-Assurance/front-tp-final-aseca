@@ -29,7 +29,11 @@ type ScreenProps = {
 
 export function RegisterScreen({ children, testID }: ScreenProps) {
   return (
-    <ThemedView testID={testID} style={styles.container}>
+    <ThemedView
+      testID={testID}
+      accessibilityLabel={testID}
+      style={styles.container}
+    >
       {children}
     </ThemedView>
   );
@@ -39,12 +43,29 @@ export function RegisterTitle({ children }: { children: string }) {
   return <ThemedText style={styles.title}>{children}</ThemedText>;
 }
 
-export function RegisterError({ children }: { children: string }) {
-  return <ThemedText style={styles.error}>{children}</ThemedText>;
+type MessageProps = {
+  children: string;
+  testID?: string;
+};
+
+export function RegisterError({ children, testID }: MessageProps) {
+  return (
+    <ThemedText style={styles.error} testID={testID} accessibilityLabel={testID}>
+      {children}
+    </ThemedText>
+  );
 }
 
-export function RegisterSuccess({ children }: { children: string }) {
-  return <ThemedText style={styles.success}>{children}</ThemedText>;
+export function RegisterSuccess({ children, testID }: MessageProps) {
+  return (
+    <ThemedText
+      style={styles.success}
+      testID={testID}
+      accessibilityLabel={testID}
+    >
+      {children}
+    </ThemedText>
+  );
 }
 
 export { AuthInput as RegisterInput };

@@ -17,6 +17,7 @@ export function CompanySearchBar({ initialQuery = '', onSearch, loading }: Props
     <View className="flex-row gap-2 items-center mb-4">
       <TextInput
         testID="company-search-input"
+        accessibilityLabel="company-search-input"
         className="flex-1 min-h-[44px] border rounded-lg px-4 py-2"
         style={{
           backgroundColor: theme.backgroundElement,
@@ -33,6 +34,7 @@ export function CompanySearchBar({ initialQuery = '', onSearch, loading }: Props
       />
       <TouchableOpacity
         testID="company-search-button"
+        accessibilityLabel="company-search-button"
         onPress={() => onSearch(query)}
         disabled={loading}
         className="bg-blue-500 min-h-[44px] px-4 justify-center items-center rounded-lg"

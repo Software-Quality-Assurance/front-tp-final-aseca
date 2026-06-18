@@ -10,7 +10,11 @@ type Props = {
 
 export function CompanyMetricsCard({ metrics }: Props) {
   return (
-    <View className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-4" testID="company-metrics-card">
+    <View
+      className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-4"
+      testID="company-metrics-card"
+      accessibilityLabel="company-metrics-card"
+    >
       <View className="flex-row justify-between items-center mb-3 border-b border-gray-200 dark:border-gray-800 pb-2">
         <ThemedText className="font-bold text-lg">Financial Metrics</ThemedText>
         <PartialDataBadge partial={metrics.partial} />
@@ -44,7 +48,11 @@ function MetricRow({ label, data, isMoney }: { label: string; data: FinancialMet
   }
 
   return (
-    <View className="flex-row justify-between items-center" testID={`metric-row-${label.replace(/\s+/g, '-').toLowerCase()}`}>
+    <View
+      className="flex-row justify-between items-center"
+      testID={`metric-row-${label.replace(/\s+/g, '-').toLowerCase()}`}
+      accessibilityLabel={`metric-row-${label.replace(/\s+/g, '-').toLowerCase()}`}
+    >
       <ThemedText className="font-medium text-sm text-gray-700 dark:text-gray-300">{label}</ThemedText>
       <View className="items-end">
         <ThemedText className={`font-semibold text-sm ${!hasValue ? 'text-gray-400' : ''}`}>

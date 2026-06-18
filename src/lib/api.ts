@@ -9,7 +9,11 @@ const rawUrl =
 
 export const BACKEND_BASE_URL =
   Platform.OS === 'android'
-    ? rawUrl.replace('localhost', '10.0.2.2').replace('127.0.0.1', '10.0.2.2')
+    ? rawUrl.includes('appium-host')
+      ? rawUrl.replace('appium-host', '127.0.0.1')
+      : rawUrl
+          .replace('localhost', '10.0.2.2')
+          .replace('127.0.0.1', '10.0.2.2')
     : rawUrl;
 
 export const COMPANY_PLACEHOLDER =

@@ -1,4 +1,5 @@
 import { useClient } from './_client';
+import { normalizeTicker } from '@/lib/ticker';
 
 export type FinancialMetric = 'REVENUE' | 'NET_INCOME' | 'EPS' | 'TOTAL_ASSETS' | 'TOTAL_LIABILITIES';
 
@@ -81,13 +82,13 @@ export function useEdgarApi() {
       apiRequest(`/api/edgar/search?query=${encodeURIComponent(query)}`),
 
     metrics: (ticker: string): Promise<FinancialMetricsResponse> =>
-      apiRequest(`/api/edgar/companies/${ticker}/metrics`),
+      apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/metrics`),
 
     filings: (ticker: string): Promise<FilingsResponse> =>
-      apiRequest(`/api/edgar/companies/${ticker}/filings`),
+      apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/filings`),
 
     history: (ticker: string, metric: FinancialMetric, quarters: number = 8): Promise<FinancialHistoryResponse> =>
-      apiRequest(`/api/edgar/companies/${ticker}/history?metric=${metric}&quarters=${quarters}`),
+      apiRequest(`/api/edgar/companies/${normalizeTicker(ticker)}/history?metric=${metric}&quarters=${quarters}`),
 
     comparison: (): Promise<FinancialComparisonResponse> =>
       apiRequest(`/api/edgar/comparison`),

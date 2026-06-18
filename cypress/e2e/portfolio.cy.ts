@@ -168,7 +168,8 @@ describe('Portfolio — Feature 5', () => {
     cy.wait('@buyOp').then((interception) => {
       expect(interception.response?.statusCode).to.eq(201);
       const body = interception.response?.body as { timestamp?: string };
-      expect(body.timestamp).to.be.a('string').and.not.be.empty;
+      expect(body.timestamp).to.be.a('string');
+      expect(body.timestamp).not.to.equal('');
     });
     cy.get('[data-testid="add-position-modal"]', { timeout: 5000 }).should(
       'not.exist'

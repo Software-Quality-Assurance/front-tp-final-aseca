@@ -77,10 +77,12 @@ describe('EDGAR Integration — Features 6.2 to 6.5', () => {
     });
 
     // Check History chart
-    cy.get('[data-testid="company-history-card"]').scrollIntoView().should('be.visible');
+    cy.get('[data-testid="company-history-card"]').scrollIntoView();
+    cy.get('[data-testid="company-history-card"]').should('be.visible');
 
     // Filings (US 6.4 criteria 5 & 6)
-    cy.get('[data-testid="company-filings-card"]').scrollIntoView().should('be.visible');
+    cy.get('[data-testid="company-filings-card"]').scrollIntoView();
+    cy.get('[data-testid="company-filings-card"]').should('be.visible');
     cy.contains('Recent Filings').should('be.visible');
   });
 

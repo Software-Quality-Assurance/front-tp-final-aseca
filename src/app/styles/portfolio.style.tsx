@@ -53,7 +53,15 @@ const styles = StyleSheet.create({
 });
 
 export function PortfolioScreen({ children }: { children: React.ReactNode }) {
-  return <ThemedView style={styles.container}>{children}</ThemedView>;
+  return (
+    <ThemedView
+      style={styles.container}
+      testID="portfolio-screen"
+      accessibilityLabel="portfolio-screen"
+    >
+      {children}
+    </ThemedView>
+  );
 }
 
 export function PortfolioSafeArea({ children }: { children: React.ReactNode }) {
@@ -94,7 +102,12 @@ type LinkButtonProps = {
 
 export function PortfolioLinkButton({ children, onPress }: LinkButtonProps) {
   return (
-    <TouchableOpacity style={styles.linkRow} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.linkRow}
+      onPress={onPress}
+      testID="portfolio-current-value-link"
+      accessibilityLabel="portfolio-current-value-link"
+    >
       <Text style={styles.linkText}>{children}</Text>
     </TouchableOpacity>
   );

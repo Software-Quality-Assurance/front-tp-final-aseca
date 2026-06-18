@@ -1,4 +1,5 @@
 import { useClient } from '@/actions/_client';
+import { normalizeTicker } from '@/lib/ticker';
 
 export interface WatchlistItem {
   id: number;
@@ -20,12 +21,12 @@ export function useWatchlistApi() {
       apiRequest('/api/watchlist'),
 
     addToWatchlist: (ticker: string): Promise<void> =>
-      apiRequest(`/api/watchlist/${ticker}`, {
+      apiRequest(`/api/watchlist/${normalizeTicker(ticker)}`, {
         method: 'POST',
       }),
 
     removeFromWatchlist: (ticker: string): Promise<void> =>
-      apiRequest(`/api/watchlist/${ticker}`, {
+      apiRequest(`/api/watchlist/${normalizeTicker(ticker)}`, {
         method: 'DELETE',
       }),
   };

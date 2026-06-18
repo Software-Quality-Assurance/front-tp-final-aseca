@@ -146,13 +146,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const authorizedFetch = useCallback(
     async (input: RequestInfo, init: RequestInit = {}) => {
-      const t = await storageGet();
+      // Prefer React state after login. SecureStore is persistence, not the
+      // authoritative source for the active session, and can fail under an
+      // emulator without invalidating an otherwise successful login.
+      const t = token ?? (await storageGet());
       const headers = new Headers(init.headers ?? {});
       if (t) headers.set('Authorization', `Bearer ${t}`);
       const merged: RequestInit = { ...init, headers };
       return fetch(input, merged);
     },
-    []
+    [token]
   );
 
   const updateProfile = useCallback(

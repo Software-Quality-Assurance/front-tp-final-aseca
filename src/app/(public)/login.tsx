@@ -25,7 +25,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(email.trim().toLowerCase(), password);
-      router.replace('/profile');
+      router.replace('/(app)');
     } catch (e: any) {
       setError(e.message ?? 'Login failed');
     } finally {
@@ -58,11 +58,15 @@ export default function LoginPage() {
         title={loading ? 'Logging in...' : 'Login'}
         onPress={onSubmit}
         disabled={loading}
-        accessibilityLabel="Login"
+        accessibilityLabel="login-submit-button"
       />
       <LoginFooterRow>
         <ThemedText>{"Don't have an account? "}</ThemedText>
-        <Link href="/register">
+        <Link
+          href="/register"
+          testID="go-to-register-link"
+          accessibilityLabel="go-to-register-link"
+        >
           <ThemedText type="linkPrimary">Register</ThemedText>
         </Link>
       </LoginFooterRow>

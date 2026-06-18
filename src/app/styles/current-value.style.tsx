@@ -33,7 +33,15 @@ export function CurrentValueScreen({
 }: {
   children: React.ReactNode;
 }) {
-  return <ThemedView style={styles.container}>{children}</ThemedView>;
+  return (
+    <ThemedView
+      style={styles.container}
+      testID="current-value-screen"
+      accessibilityLabel="current-value-screen"
+    >
+      {children}
+    </ThemedView>
+  );
 }
 
 export function CurrentValueSafeArea({
@@ -68,5 +76,13 @@ export function CurrentValueCenteredContent({
 }: {
   children: React.ReactNode;
 }) {
-  return <View style={styles.centeredContent}>{children}</View>;
+  return (
+    <View
+      style={styles.centeredContent}
+      testID="current-value-content"
+      accessibilityLabel="current-value-content"
+    >
+      {children}
+    </View>
+  );
 }

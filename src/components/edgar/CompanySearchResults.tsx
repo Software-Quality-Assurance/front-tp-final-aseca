@@ -19,11 +19,16 @@ export function CompanySearchResults({ results, onSelect, loading }: Props) {
   }
 
   return (
-    <View className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4" testID="company-search-results">
+    <View
+      className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4"
+      testID="company-search-results"
+      accessibilityLabel="company-search-results"
+    >
       {results.map((company, index) => (
         <TouchableOpacity
           key={company.cik}
           testID={`search-result-${company.ticker}`}
+          accessibilityLabel={`search-result-${company.ticker}`}
           onPress={() => onSelect(company.ticker)}
           className={`p-4 flex-row items-center justify-between ${
             index > 0 ? 'border-t border-gray-200 dark:border-gray-800' : ''

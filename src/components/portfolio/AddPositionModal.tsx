@@ -5,6 +5,7 @@ import type { OperationType } from '@/actions/types';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
+import { normalizeTicker } from '@/lib/ticker';
 import { COMPANY_PLACEHOLDER } from '@/lib/api';
 
 type Props = {
@@ -37,15 +38,16 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
 
   async function handleSubmit() {
     setError(null);
+    const normalizedTicker = normalizeTicker(ticker);
     const qty = Number(quantity);
-    if (!ticker.trim()) return setError('Ticker is required');
+    if (!normalizedTicker) return setError('Ticker is required');
     if (!qty || qty <= 0 || !Number.isInteger(qty))
       return setError('Quantity must be a whole number ≥ 1');
 
     setLoading(true);
     try {
       await createOperation({
-        ticker: ticker.trim().toUpperCase(),
+        ticker: normalizedTicker,
         type,
         quantity: qty,
       });
@@ -78,6 +80,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
       <View className="flex-1 justify-center items-center bg-black/60">
         <ThemedView
           testID="add-position-modal"
+          accessibilityLabel="add-position-modal"
           className="w-80 rounded-2xl p-6 gap-4"
         >
           <ThemedText className="text-xl font-semibold">
@@ -88,6 +91,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
           <View className="flex-row rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700">
             <TouchableOpacity
               testID="add-position-buy-button"
+              accessibilityLabel="add-position-buy-button"
               className={`flex-1 py-2.5 items-center ${type === 'BUY' ? 'bg-green-500' : ''}`}
               onPress={() => setType('BUY')}
             >
@@ -99,6 +103,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             </TouchableOpacity>
             <TouchableOpacity
               testID="add-position-sell-button"
+              accessibilityLabel="add-position-sell-button"
               className={`flex-1 py-2.5 items-center ${type === 'SELL' ? 'bg-red-500' : ''}`}
               onPress={() => setType('SELL')}
             >
@@ -113,6 +118,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
           {error ? (
             <ThemedText
               testID="add-position-error"
+              accessibilityLabel="add-position-error"
               className="text-red-500 text-sm"
             >
               {error}
@@ -126,6 +132,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             </ThemedText>
             <TextInput
               testID="add-position-ticker-input"
+              accessibilityLabel="add-position-ticker-input"
               placeholder={`e.g. ${COMPANY_PLACEHOLDER}`}
               placeholderTextColor={theme.textSecondary}
               value={ticker}
@@ -143,6 +150,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             </ThemedText>
             <TextInput
               testID="add-position-quantity-input"
+              accessibilityLabel="add-position-quantity-input"
               placeholder="e.g. 10"
               placeholderTextColor={theme.textSecondary}
               value={quantity}
@@ -156,6 +164,8 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
           {/* Actions */}
           <View className="flex-row gap-3 mt-2">
             <TouchableOpacity
+              testID="add-position-cancel-button"
+              accessibilityLabel="add-position-cancel-button"
               className="flex-1 py-3 rounded-lg border border-gray-400 items-center"
               onPress={handleClose}
               disabled={loading}
@@ -164,6 +174,7 @@ export function AddPositionModal({ visible, onClose, onSuccess }: Props) {
             </TouchableOpacity>
             <TouchableOpacity
               testID="add-position-submit-button"
+              accessibilityLabel="add-position-submit-button"
               className={`flex-1 py-3 rounded-lg items-center ${type === 'BUY' ? 'bg-green-500' : 'bg-red-500'}`}
               onPress={handleSubmit}
               disabled={loading}

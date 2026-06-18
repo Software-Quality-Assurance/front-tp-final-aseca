@@ -113,17 +113,24 @@ export default function ProfilePage() {
         title={saving ? 'Saving...' : 'Save changes'}
         onPress={doSave}
         disabled={saving}
+        accessibilityLabel="profile-save-button"
       />
       <ProfileSpacer />
       <Button
         title="Logout"
+        accessibilityLabel="profile-logout-button"
         onPress={async () => {
           await logout();
           router.push('/login');
         }}
       />
       <ProfileSpacer />
-      <Button title="Delete account" color="red" onPress={doDelete} />
+      <Button
+        title="Delete account"
+        color="red"
+        onPress={doDelete}
+        accessibilityLabel="profile-delete-button"
+      />
     </ProfileScreen>
   );
 }

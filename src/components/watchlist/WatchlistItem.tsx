@@ -31,7 +31,11 @@ export function WatchlistItem({ item, onRemove }: Props) {
   };
 
   return (
-    <View className="flex-row items-center justify-between p-4 mb-2 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+    <View
+      testID={`watchlist-item-${item.ticker}`}
+      accessibilityLabel={`watchlist-item-${item.ticker}`}
+      className="flex-row items-center justify-between p-4 mb-2 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800"
+    >
       <View className="flex-1">
         <ThemedText className="text-lg font-bold">{item.ticker}</ThemedText>
         <ThemedText themeColor="textSecondary" className="text-sm">
@@ -49,6 +53,8 @@ export function WatchlistItem({ item, onRemove }: Props) {
         )}
       </View>
       <TouchableOpacity
+        testID={`watchlist-remove-button-${item.ticker}`}
+        accessibilityLabel={`watchlist-remove-button-${item.ticker}`}
         onPress={handleDelete}
         className="bg-red-100 dark:bg-red-900/30 p-2 rounded-lg"
       >

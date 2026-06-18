@@ -29,7 +29,15 @@ const styles = StyleSheet.create({
 });
 
 export function HistoryScreen({ children }: { children: React.ReactNode }) {
-  return <ThemedView style={styles.container}>{children}</ThemedView>;
+  return (
+    <ThemedView
+      style={styles.container}
+      testID="history-screen"
+      accessibilityLabel="history-screen"
+    >
+      {children}
+    </ThemedView>
+  );
 }
 
 export function HistorySafeArea({ children }: { children: React.ReactNode }) {
@@ -60,5 +68,13 @@ export function HistoryCenteredContent({
 }: {
   children: React.ReactNode;
 }) {
-  return <View style={styles.centeredContent}>{children}</View>;
+  return (
+    <View
+      style={styles.centeredContent}
+      testID="history-content"
+      accessibilityLabel="history-content"
+    >
+      {children}
+    </View>
+  );
 }

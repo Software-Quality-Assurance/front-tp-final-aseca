@@ -46,8 +46,16 @@ export default function RegisterPage() {
   return (
     <RegisterScreen testID="register-screen">
       <RegisterTitle>Register</RegisterTitle>
-      {error ? <RegisterError>{error}</RegisterError> : null}
-      {success ? <RegisterSuccess>{success}</RegisterSuccess> : null}
+      {error ? (
+        <RegisterError testID="register-error-message">
+          {error}
+        </RegisterError>
+      ) : null}
+      {success ? (
+        <RegisterSuccess testID="register-success-message">
+          {success}
+        </RegisterSuccess>
+      ) : null}
       <RegisterInput
         testID="register-email-input"
         placeholder="Email"
@@ -69,10 +77,15 @@ export default function RegisterPage() {
         title={loading ? 'Creating...' : 'Create account'}
         onPress={onSubmit}
         disabled={loading}
+        accessibilityLabel="register-submit-button"
       />
       <RegisterFooterRow>
         <ThemedText>Already have an account? </ThemedText>
-        <Link href="/login">
+        <Link
+          href="/login"
+          testID="go-to-login-link"
+          accessibilityLabel="go-to-login-link"
+        >
           <ThemedText type="linkPrimary">Login</ThemedText>
         </Link>
       </RegisterFooterRow>

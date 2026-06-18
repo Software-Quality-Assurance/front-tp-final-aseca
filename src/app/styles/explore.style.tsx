@@ -99,6 +99,7 @@ export function ExploreScroll({ children, testID }: ExploreScrollProps) {
   return (
     <ScrollView
       testID={testID}
+      accessibilityLabel={testID}
       style={[styles.scrollView, { backgroundColor: theme.background }]}
       contentInset={insets}
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
