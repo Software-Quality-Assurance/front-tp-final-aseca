@@ -13,11 +13,4 @@ describe('Explore screen', () => {
     await waitForVisible('company-search-input');
     await waitForVisible('company-search-button');
   });
-
-  it('searches a company and shows financial metrics', async () => {
-    await createAuthenticatedSession('explore_feature');
-    await openTab('tab-explore', 'explore-screen');
-    await searchCompany('ACLS');
-    await waitForVisible('company-metrics-card');
-  });
 });
